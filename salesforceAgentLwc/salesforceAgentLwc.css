@@ -1,0 +1,42 @@
+:host{
+    --main-background-color:#c7f8ff;
+}
+
+.main-div{
+    background-color: var(--main-background-color);
+    height: 100%;
+    width: 100%;
+    padding: 5rem;
+    /* display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap; */
+}
+
+.text-div{
+    display: flex;
+    flex-direction: column;
+    gap:1 rem;
+    width: 100%;
+    justify-content: flex-start;
+    padding: 2rem;
+    align-items: flex-start;
+}
+
+.topics-list{
+    list-style-type: disc;
+    margin-left: 1rem;    /* Adjusts indentation */
+    padding-left: 1rem;
+}
+
+
+.topics-list li{
+    font-size: 2rem;
+}
+
+.chat-bot-parent-div{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}

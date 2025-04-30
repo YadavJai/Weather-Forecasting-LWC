@@ -1,0 +1,27 @@
+<template>
+    <div data-id="toastModel"  class="slds-hide">
+        <div class={containerCss} style="top:0%">
+            <div class={mainDivClass} role="status" >
+                <span class="slds-assistive-text">{variant}</span>
+                    <span class={messageDivClass} title={message}>
+                    <lightning-icon icon-name={iconName} size="small" variant="inverse"></lightning-icon>
+                </span>
+                <div class="slds-notify__content">  
+                    <template if:true={istitlerequired}>
+                        <h2 class="slds-text-heading_small">{title}</h2>
+                        <p style="font-size: .875rem;white-space:pre-wrap;">{message}</p>                    
+                    </template>
+                    <template if:false={istitlerequired}>
+                        <h2 class="slds-text-heading_small">{message}</h2>                        
+                    </template>
+                </div>
+                <div class="slds-notify__close">
+                    <button class="slds-button slds-button_icon slds-button_icon-inverse" title="Close" onclick={closeModel}>
+                        <lightning-icon icon-name="utility:close" size="small" variant="inverse"> </lightning-icon>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                </div> 
+            </div>
+        </div>
+    </div>
+</template>

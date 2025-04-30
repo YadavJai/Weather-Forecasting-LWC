@@ -1,0 +1,607 @@
+<template>
+    <div if:false={isLoaded} class="slds-align_absolute-center">
+      <lightning-spinner variant="brand" size="small" alternative-text="Loading">
+      </lightning-spinner>
+    </div>
+    <article class="slds-card" style="border: none;
+    padding: 0.25rem;
+    background-color: rgba(241,241,241,.5);box-shadow: 0px 2px 2px #6666;">
+      <div class="slds-card__header slds-grid">
+        <header class="slds-media slds-media_center slds-has-flexi-truncate">
+          <div class="slds-media__figure">
+            <span class="slds-icon_container slds-icon-standard-account" title="Setup">
+              <lightning-icon icon-name="standard:user" size="medium">
+              </lightning-icon>
+            </span>
+          </div>
+          <div class="slds-media__body">
+            <h2 class="slds-card__header-title" style="font-weight: 500;">
+              QB Made Easy Permissions
+            </h2>
+          </div>
+        </header>
+      </div>
+    </article>
+    <div class="main-class" style="margin-left: 0.5rem;
+    margin-top: 1rem;">
+      <div class="slds-tabs_default">
+        <ul class="slds-tabs_default__nav" role="tablist">
+          <li class="slds-tabs_default__item slds-is-active" title="Overview" role="presentation"
+          onclick={handleTab}>
+            <a class="slds-tabs_default__link" href="#" role="tab" tabindex="0" aria-selected="true"
+            aria-controls="tab-default-1" id="tab-default-1__item">
+              Overview
+            </a>
+          </li>
+          <li class="slds-tabs_default__item" title="Admin" role="presentation"
+          onclick={handleTab}>
+            <a class="slds-tabs_default__link" href="#" role="tab" tabindex="-1" aria-selected="false"
+            aria-controls="tab-default-2" id="tab-default-2__item">
+              Admin
+            </a>
+          </li>
+          <li class="slds-tabs_default__item" title="Business" role="presentation"
+          onclick={handleTab}>
+            <a class="slds-tabs_default__link" href="#" role="tab" tabindex="-1" aria-selected="false"
+            aria-controls="tab-default-3" id="tab-default-3__item">
+              Business
+            </a>
+          </li>
+          <li class="slds-tabs_default__item" title="Read-Only" role="presentation"
+          onclick={handleTab}>
+            <a class="slds-tabs_default__link" href="#" role="tab" tabindex="-1" aria-selected="false"
+            aria-controls="tab-default-4" id="tab-default-4__item">
+              Read-Only
+            </a>
+          </li>
+          <li class="slds-tabs_default__item" title="All Permission Sets" role="presentation"
+          onclick={handleTab}>
+            <a class="slds-tabs_default__link" href="#" role="tab" tabindex="-1" aria-selected="false"
+            aria-controls="tab-default-5" id="tab-default-5__item">
+              All Permission Sets
+            </a>
+          </li>
+        </ul>
+        <div id="tab-default-1" class="slds-tabs_default__content slds-show" role="tabpanel"
+        aria-labelledby="tab-default-1__item" style="color:black">
+          <div class="content">
+            <ul style="list-style-type: circle;margin-left:1.1rem;line-height:1.5rem">
+              <li>
+                <b>
+                  QB Made Easy Admin Permission Set: 
+                </b>
+                &nbsp;Users with this permission set have full control over QB Made Easy functionality,
+                including managing connections to QuickBooks entities, configuring settings,
+                and accessing administrative tabs such as QB Setup and QB Mapping.
+              </li>
+              <li>
+                <b>
+                  QB Made Easy Business Permission Set: 
+                </b>
+                &nbsp;Users with this permission set, or higher, can utilize real-time synchronization
+                features for QB Made Easy, ensuring timely and accurate data updates between
+                Salesforce and QuickBooks.
+              </li>
+              <li>
+                <b>
+                  QB Made Easy Read-Only Permission Set: 
+                </b>
+                &nbsp;Users granted this permission set, or a higher one, are limited to viewing
+                records within QB Made Easy, ensuring data integrity and security while
+                still allowing access to vital information for reporting and analysis purposes.
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div id="tab-default-2" class="slds-tabs_default__content slds-hide" role="tabpanel"
+        aria-labelledby="tab-default-2__item" style="display: flex;
+        align-items: flex-start;
+        gap: 1.5rem;
+        flex-direction: column;
+        color: black;
+        ">
+          <p>
+            The following users have the QB Sync Made Easy
+            <b>
+              &nbsp;Admin Permission Set 
+            </b>
+            .This allows to see the QB Setup,QB Mapping Tabs of QB Sync. Additionally,
+            users with the QB Sync Made Easy Admin Permission Set are the only ones
+            who can-
+          </p>
+          <ul style="list-style-type: circle;margin-left:1.1rem">
+            <li>
+              Add/Delete QB Company
+            </li>
+            <li>
+              Choose Price Book
+            </li>
+            <li>
+              Bypass Duplicate Records
+            </li>
+            <li>
+              Historical Sync , Realtime Sync
+            </li>
+            <li>
+              Add/Delete/Edit or Even Choose Default Mappings
+            </li>
+            <li>
+              Sync Custom Fields
+            </li>
+          </ul>
+          <template if:false={adminPermissionIsEmpty}>
+            <div class="slds-section slds-is-open" style="width: 100%;">
+              <h3 class="slds-section__title slds-theme_shade">
+                <span class="slds-truncate slds-p-horizontal_small">
+                  Users to whom
+                  <b>
+                  &nbsp;Admin Permission Set&nbsp;
+                  </b>
+                  has been assigned
+                </span>
+              </h3>
+            </div>
+            <table class="slds-table slds-table_cell-buffer slds-table_bordered" aria-label="Example default base table of Opportunities">
+              <thead style="background-color: rgb(240 240 240)!important;">
+                <tr class="slds-line-height_reset">
+                  <th class="" scope="col" style=" background-color: rgb(240 240 240) !important;">
+                    <div class="slds-truncate" title="User Id">
+                      User Id
+                    </div>
+                  </th>
+                  <th class="" scope="col" style=" background-color: rgb(240 240 240)!important;">
+                    <div class="slds-truncate" title="User Name">
+                      User Name
+                    </div>
+                  </th>
+                  <th class="" scope="col" style=" background-color: rgb(240 240 240) !important;">
+                    <div class="slds-truncate" title="Profile">
+                      Profile
+                    </div>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <template for:each={adminPermissionUsers} for:item="Record">
+                  <tr class="slds-hint-parent" key={Record.Id}>
+                    <td data-label="User Id">
+                      <div class="slds-truncate" title="User Id">
+                        {Record.AssigneeId}
+                      </div>
+                    </td>
+                    <td data-label="User Name">
+                      <div class="slds-truncate" title="User Name">
+                        {Record.Assignee.Name}
+                      </div>
+                    </td>
+                    <td data-label="Profile Name">
+                      <div class="slds-truncate" title="Profile Name">
+                        {Record.Assignee.Profile.Name}
+                      </div>
+                    </td>
+                  </tr>
+                </template>
+              </tbody>
+            </table>
+          </template>
+          <template if:true={adminPermissionIsEmpty}>
+            <p style="display: inline;text-align:center;width:100%;margin:.5rem 0;padding:1rem;border-top:1px solid #6666;border-bottom:1px solid #6666">
+              There is no user in your org with this permission set.
+            </p>
+          </template>
+          <!-- <p>
+            You can
+            <a onclick={navigateToLogs} style="text-decoration: underline;">
+              &nbsp;assign this Permission set to a user.
+            </a>
+          </p> -->
+          <div class="slds-section slds-is-open" style="width: 100%;">
+            <h3 class="slds-section__title slds-theme_shade">
+              <span class="slds-truncate slds-p-horizontal_small">
+                Salesforce Users with Modify All Permission Settings
+              </span>
+            </h3>
+          </div>
+          <template if:false={adminModifyAllIsEmpty}>
+            <table class="slds-table slds-table_cell-buffer slds-table_bordered" aria-label="Example default base table of Opportunities">
+              <thead style="background-color: rgb(240 240 240)!important;">
+                <tr class="slds-line-height_reset">
+                  <th class="" scope="col" style=" background-color:  rgb(240 240 240) !important;">
+                    <div class="slds-truncate" title="User Id">
+                      User Id
+                    </div>
+                  </th>
+                  <th class="" scope="col" style=" background-color: rgb(240 240 240)!important;">
+                    <div class="slds-truncate" title="User Name">
+                      User Name
+                    </div>
+                  </th>
+                  <th class="" scope="col" style=" background-color: rgb(240 240 240) !important;">
+                    <div class="slds-truncate" title="Profile">
+                      Profile
+                    </div>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <template for:each={modifyAllUsersList} for:item="Record">
+                  <tr class="slds-hint-parent" key={Record.Id}>
+                    <td data-label="User Id">
+                      <div class="slds-truncate" title="User Id">
+                        {Record.Id}
+                      </div>
+                    </td>
+                    <td data-label="User Name">
+                      <div class="slds-truncate" title="User Name">
+                        {Record.Name}
+                      </div>
+                    </td>
+                    <td data-label="Profile Name">
+                      <div class="slds-truncate" title="Profile Name">
+                        {Record.Profile.Name}
+                      </div>
+                    </td>
+                  </tr>
+                </template>
+              </tbody>
+            </table>
+          </template>
+          <template if:true={adminModifyAllIsEmpty}>
+            <p style="display: inline;text-align:center;width:100%;margin:.5rem 0;padding:1rem;border-top:1px solid #6666;border-bottom:1px solid #6666">
+              There is no user in your org with this permission set.
+            </p>
+          </template>
+        </div>
+        <div id="tab-default-3" class="slds-tabs_default__content slds-hide" role="tabpanel"
+        aria-labelledby="tab-default-3__item" style="display: flex;
+        align-items: flex-start;
+        gap: 1.5rem;
+        flex-direction: column;
+        color: black;
+        ">
+          <p>
+            The following users have the
+            <b>
+              &nbsp;QB Sync Made Easy Business Permission Set
+            </b>
+            , users with this permission set (or a higher permission set, such as
+            the Admin Permission Set) can-
+          </p>
+          <ul style="list-style-type: circle;margin-left:1.1rem">
+            <li>
+              Do Real-Time Sync
+            </li>
+          </ul>
+          <template if:false={businessPermissionIsEmpty}>
+            <div class="slds-section slds-is-open" style="width: 100%;">
+              <h3 class="slds-section__title slds-theme_shade">
+                <span class="slds-truncate slds-p-horizontal_small">
+                  Users to whom
+                  <b>
+                    &nbsp;Business Permission Set&nbsp; 
+                  </b>
+                   has been assigned
+                </span>
+              </h3>
+            </div>
+            <table class="slds-table slds-table_cell-buffer slds-table_bordered" aria-label="Example default base table of Opportunities">
+              <thead style="background-color: rgb(240 240 240)!important;">
+                <tr class="slds-line-height_reset">
+                  <th class="" scope="col" style=" background-color: rgb(240 240 240) !important;">
+                    <div class="slds-truncate" title="User Id">
+                      User Id
+                    </div>
+                  </th>
+                  <th class="" scope="col" style=" background-color: rgb(240 240 240)!important;">
+                    <div class="slds-truncate" title="User Name">
+                      User Name
+                    </div>
+                  </th>
+                  <th class="" scope="col" style=" background-color: rgb(240 240 240) !important;">
+                    <div class="slds-truncate" title="Profile">
+                      Profile
+                    </div>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <template for:each={businessPermissionUsers} for:item="Record">
+                  <tr class="slds-hint-parent" key={Record.Id}>
+                    <td data-label="User Id">
+                      <div class="slds-truncate" title="User Id">
+                        {Record.AssigneeId}
+                      </div>
+                    </td>
+                    <td data-label="User Name">
+                      <div class="slds-truncate" title="User Name">
+                        {Record.Assignee.Name}
+                      </div>
+                    </td>
+                    <td data-label="Profile Name">
+                      <div class="slds-truncate" title="Profile Name">
+                        {Record.Assignee.Profile.Name}
+                      </div>
+                    </td>
+                  </tr>
+                </template>
+              </tbody>
+            </table>
+          </template>
+          <template if:true={businessPermissionIsEmpty}>
+            <p style="display: inline;text-align:center;width:100%;margin:.5rem 0;padding:1rem;border-top:1px solid #6666;border-bottom:1px solid #6666">
+              There is no user in your org with this permission set.
+            </p>
+          </template>
+          <!-- <p>
+            You can
+            <a href="">
+              &nbsp;assign this Permission set to a user.
+            </a>
+          </p> -->
+        </div>
+        <div id="tab-default-4" class="slds-tabs_default__content slds-hide" role="tabpanel"
+        aria-labelledby="tab-default-4__item" style="display: flex;
+        align-items: flex-start;
+        gap: 1.5rem;
+        flex-direction: column;
+        color: black;
+        ">
+          <p>
+            The following users have the
+            <b>
+              &nbsp;QB Sync Read-Only Permission Set
+            </b>
+            , users with this permission set (or a higher permission set, such as
+            the Admin, Business, or Standard Permission Set) can-
+          </p>
+          <ul style="list-style-type: circle;margin-left:1.1rem">
+            <li>
+              View(Read-Only) Records
+            </li>
+          </ul>
+          <template if:false={readOnlyPermissionIsEmpty}>
+            <div class="slds-section slds-is-open" style="width: 100%;">
+              <h3 class="slds-section__title slds-theme_shade">
+                <span class="slds-truncate slds-p-horizontal_small">
+                  Users to whom
+                  <b>
+                  &nbsp;Read-Only Permission Set&nbsp;
+                  </b>
+                  has been assigned
+                </span>
+              </h3>
+            </div>
+            <table class="slds-table slds-table_cell-buffer slds-table_bordered" aria-label="Example default base table of Opportunities">
+              <thead style="background-color: rgb(240 240 240)!important;">
+                <tr class="slds-line-height_reset">
+                  <th class="" scope="col" style=" background-color: rgb(240 240 240) !important;">
+                    <div class="slds-truncate" title="User Id">
+                      User Id
+                    </div>
+                  </th>
+                  <th class="" scope="col" style=" background-color: rgb(240 240 240)!important;">
+                    <div class="slds-truncate" title="User Name">
+                      User Name
+                    </div>
+                  </th>
+                  <th class="" scope="col" style=" background-color: rgb(240 240 240) !important;">
+                    <div class="slds-truncate" title="Profile">
+                      Profile
+                    </div>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <template for:each={readOnlyPermissionUsers} for:item="Record">
+                  <tr class="slds-hint-parent" key={Record.Id}>
+                    <td data-label="User Id">
+                      <div class="slds-truncate" title="User Id">
+                        {Record.AssigneeId}
+                      </div>
+                    </td>
+                    <td data-label="User Name">
+                      <div class="slds-truncate" title="User Name">
+                        {Record.Assignee.Name}
+                      </div>
+                    </td>
+                    <td data-label="Profile Name">
+                      <div class="slds-truncate" title="Profile Name">
+                        {Record.Assignee.Profile.Name}
+                      </div>
+                    </td>
+                  </tr>
+                </template>
+              </tbody>
+            </table>
+          </template>
+          <template if:true={readOnlyPermissionIsEmpty}>
+            <p style="display: inline;text-align:center;width:100%;margin:.5rem 0;padding:1rem;border-top:1px solid #6666;border-bottom:1px solid #6666">
+              There is no user in your org with this permission set.
+            </p>
+          </template>
+          <!-- <p>
+            You can
+            <a href="">
+            &nbsp;assign this Permission set to a user.
+            </a>
+          </p> -->
+        </div>
+        <div id="tab-default-5" class="slds-tabs_default__content slds-hide" role="tabpanel"
+        aria-labelledby="tab-default-5__item" style="display: flex;
+        align-items: flex-start;
+        gap: 1.5rem;
+        flex-direction: column;
+        color: black;
+        ">
+          <template if:false={allSetsIsEmpty}>
+            <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+              <thead style="background-color: rgb(240 240 240)!important;">
+                <tr class="slds-line-height_reset">
+                  <th class="" scope="col" style=" background-color: rgb(240 240 240) !important;">
+                    <div class="slds-truncate" title="User Id">
+                      Full Name
+                    </div>
+                  </th>
+                  <th class="" scope="col" style=" background-color: rgb(240 240 240)!important;">
+                    <div class="slds-truncate" title="User Name">
+                      User Name
+                    </div>
+                  </th>
+                  <th class="" scope="col" style=" background-color: rgb(240 240 240) !important;">
+                    <div class="slds-truncate" title="Profile">
+                      Profile
+                    </div>
+                  </th>
+                  <th class="" scope="col" style=" background-color: rgb(240 240 240) !important;">
+                    <div class="slds-truncate" title="Profile">
+                      Admin
+                    </div>
+                  </th>
+                  <th class="" scope="col" style=" background-color: rgb(240 240 240) !important;">
+                    <div class="slds-truncate" title="Profile">
+                      Business
+                    </div>
+                  </th>
+                  <th class="" scope="col" style=" background-color: rgb(240 240 240) !important;">
+                    <div class="slds-truncate" title="Profile">
+                      Read-Only
+                    </div>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <template for:each={allPermissionSetsMap} for:item="Record">
+                  <tr class="slds-hint-parent" key={Record.fullName}>
+                    <td data-label="Full Name">
+                      <div class="slds-truncate" title="Full Name">
+                        {Record.fullName}
+                      </div>
+                    </td>
+                    <td data-label="User Name">
+                      <div class="slds-truncate" title="User Name">
+                        {Record.userName}
+                      </div>
+                    </td>
+                    <td data-label="Profile Name">
+                      <div class="slds-truncate" title="Profile Name">
+                        {Record.profile}
+                      </div>
+                    </td>
+                    <template if:true={Record.isAdmin}>
+                      <td data-label="Admin Permission Set">
+                        <div class="slds-truncate" title="Admin Permission Set">
+                          <div class="slds-form-element">
+                            <div class="slds-form-element__control">
+                              <div class="slds-checkbox">
+                                <input type="checkbox" id="checkbox-unique-id-1" disabled="" checked />
+                                <label class="slds-checkbox__label" for="checkbox-unique-id-83">
+                                  <span class="slds-checkbox_faux">
+                                  </span>
+                                </label>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </template>
+                    <template if:false={Record.isAdmin}>
+                      <td data-label="Admin Permission Set">
+                        <div class="slds-truncate" title="Admin Permission Set">
+                          <div class="slds-form-element">
+                            <div class="slds-form-element__control">
+                              <div class="slds-checkbox">
+                                <input type="checkbox" id="checkbox-unique-id-2" disabled="" />
+                                <label class="slds-checkbox__label" for="checkbox-unique-id-83">
+                                  <span class="slds-checkbox_faux">
+                                  </span>
+                                </label>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </template>
+                    <template if:true={Record.isBusiness}>
+                      <td data-label="Business Permission Set">
+                        <div class="slds-truncate" title="Business Permission Set">
+                          <div class="slds-form-element">
+                            <div class="slds-form-element__control">
+                              <div class="slds-checkbox">
+                                <input type="checkbox" id="checkbox-unique-id-3" disabled="" checked />
+                                <label class="slds-checkbox__label" for="checkbox-unique-id-83">
+                                  <span class="slds-checkbox_faux">
+                                  </span>
+                                </label>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </template>
+                    <template if:false={Record.isBusiness}>
+                      <td data-label="Business Permission Set">
+                        <div class="slds-truncate" title="Business Permission Set">
+                          <div class="slds-form-element">
+                            <div class="slds-form-element__control">
+                              <div class="slds-checkbox">
+                                <input type="checkbox" id="checkbox-unique-id-4" disabled="" />
+                                <label class="slds-checkbox__label" for="checkbox-unique-id-83">
+                                  <span class="slds-checkbox_faux">
+                                  </span>
+                                </label>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </template>
+                    <template if:true={Record.isReadOnly}>
+                      <td data-label="Read-Only Permission Set">
+                        <div class="slds-truncate" title="Read-Only Permission Set">
+                          <div class="slds-form-element">
+                            <div class="slds-form-element__control">
+                              <div class="slds-checkbox">
+                                <input type="checkbox" id="checkbox-unique-id-5" value="checkbox-unique-id-33"
+                                disabled="" checked />
+                                <label class="slds-checkbox__label" for="checkbox-unique-id-83">
+                                  <span class="slds-checkbox_faux">
+                                  </span>
+                                </label>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </template>
+                    <template if:false={Record.isReadOnly}>
+                      <td data-label="Read-Only Permission Set">
+                        <div class="slds-truncate" title="Read-Only Permission Set">
+                          <div class="slds-form-element">
+                            <div class="slds-form-element__control">
+                              <div class="slds-checkbox">
+                                <input type="checkbox" id="checkbox-unique-id-6" value="checkbox-unique-id-33"
+                                disabled="" />
+                                <label class="slds-checkbox__label" for="checkbox-unique-id-83">
+                                  <span class="slds-checkbox_faux">
+                                  </span>
+                                </label>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </template>
+                  </tr>
+                </template>
+              </tbody>
+            </table>
+          </template>
+          <template if:true={allSetsIsEmpty}>
+            <p style="display: inline;text-align:center;width:100%;margin:.5rem 0;padding:1rem;border-top:1px solid #6666;border-bottom:1px solid #6666">
+              There is no user in your org with this permission set.
+            </p>
+          </template>
+        </div>
+      </div>
+    </div>
+  </template>

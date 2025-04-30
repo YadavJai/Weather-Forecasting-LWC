@@ -1,0 +1,12 @@
+<!-- sldsValidatorIgnore -->
+<template>
+    <!-- <lightning-button label="Convert To Invoice" title="Convert To Invoice" onclick={handleClickConvertToInvoice} disabled={isclick} class="slds-m-left_x-small" variant="brand"></lightning-button> -->
+    <button class="slds-button slds-button_outline-brand slds-p-horizontal_x-small" onclick={handleClickConvertToInvoice} disabled={isclick}>
+        <img src = {qbIcon} class="qbicon">
+        { qbButtonLabel }
+    </button>
+
+    <div style="height:0px">
+        <c-qb_-custom-toast-comp></c-qb_-custom-toast-comp>
+    </div>
+</template>

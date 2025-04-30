@@ -1,0 +1,92 @@
+<template>
+    <div style="height:0px">
+        <c-qb_-custom-toast-comp></c-qb_-custom-toast-comp>
+    </div>
+    <article class="slds-card" style="border: none; padding: 0.25rem; background-color: rgba(241,241,241,.5); box-shadow: 0px 2px 2px #6666;">
+        <div class="slds-card__header slds-grid">
+            <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                <div class="slds-media__figure">
+                    <span class="slds-icon_container slds-icon-standard-account" title="Setup">
+                        <lightning-icon icon-name="standard:crypto_transaction_envelope_change_snapshot" size="medium"></lightning-icon>
+                    </span>
+                </div>
+                <div class="slds-media__body">
+                    <h2 class="slds-card__header-title" style="font-weight: 500;">Enable/Disable QB To SF Real-Time Sync</h2>
+                </div>
+            </header>
+        </div>
+    </article>
+
+    <!-- for loader class -->
+    <div if:false={isLoaded} class="slds-align_absolute-center">
+        <lightning-spinner variant="brand" size="small" alternative-text="Loading"></lightning-spinner>
+    </div>
+    <!-- Main Container -->
+    <div style="margin-left: 0.5rem; margin-top: 1rem;" class="mainContainer">
+
+        <template lwc:if={errorOccured}>
+            <div style="display: flex;align-items:center;justify-content:center;border-top:1px solid #6666;border-bottom:1px solid #6666;padding:2.5rem">
+                <lightning-icon icon-name=standard:first_non_empty style="margin-right: .5rem;background:red" size="medium" ></lightning-icon>
+                <p>Some kind of error occurred.</p>
+            </div>
+        </template>
+        <!-- <template lwc:elseif={ifNoProFeature}>
+            <div style="display: flex;align-items:center;justify-content:center;border-top:1px solid #6666;border-bottom:1px solid #6666;padding:2.5rem">
+                <lightning-icon icon-name=standard:first_non_empty style="margin-right: .5rem;background:red" size="medium" ></lightning-icon>
+                <p>This feature is available exclusively in the paid version. Please <a href="https://qbsyncmadeasy.com/premium-support-package/">Contact us </a> to enable it.</p>
+            </div>
+        </template> -->
+        <template lwc:elseif={ifNoCompany}>
+            <div style="display: flex;align-items:center;justify-content:center;border-top:1px solid #6666;border-bottom:1px solid #6666;padding:2.5rem">
+                <lightning-icon icon-name=standard:first_non_empty style="margin-right: .5rem;background:red" size="medium" ></lightning-icon>
+                <p>No company has been founded yet. Please connect with a company to establish real-time sync settings for data integration.</p>
+            </div>
+        </template>
+        <template lwc:else>
+            <div class="recContainer" style="display: flex; flex-direction: column; gap: .5rem;">
+                <lightning-accordion allow-multiple-sections-open>
+                    <template for:each={customMetadataList} for:item="rec" for:index="index">
+                        <lightning-accordion-section name={rec.qbCompanyName} data-name={rec.qbCompanyName} label={rec.qbCompanyName} key={rec.qbCompanyName} style="background: rgb(240 240 240); color: black;">
+                            <div class="checkbox-container">
+                                <template for:each={rec.data} for:item="customData" for:index="index">
+                                    <div key={customData.objectName} style="position: relative;">
+                                        <div data-name="checkbox-div" data-objectname={customData.objectName} data-index={index}>
+                                            <div style="display: flex;">
+                                                <lightning-icon icon-name={customData.iconName} style="margin-right: .5rem;" size="medium"></lightning-icon>
+                                                <!-- <template if:true={customData.objectName}>
+                                                    <p style="font-size: 1rem; font-weight: 500;">{customData.objectName}</p>
+                                                </template>
+                                                <template if:false={customData.objectName}>
+                                                    <lightning-combobox data-name="object-combo" onchange={handleComboBox} placeholder="Select Object For Real-Time Sync Setting" data-index={index} data-label={rec.key} options={options}></lightning-combobox>
+                                                </template> -->
+                                                <p style="font-size: 1rem; font-weight: 500;">{customData.objectName}</p>
+                                            </div>
+                                            <div style="display: flex; align-items: center" class="lgc-bg">
+                                                <!-- <template if:true={customData.isStandard}>
+                                                    <lightning-button-icon icon-name="utility:delete" variant="brand" alternative-text="Delete" class="slds-m-right_small" title="Delete" disabled></lightning-button-icon>
+                                                </template>
+                                                <template if:false={customData.isStandard}>
+                                                    <lightning-button-icon icon-name="utility:delete" variant="brand" alternative-text="Delete" class="slds-m-right_small" title="Delete"></lightning-button-icon>
+                                                </template> -->
+                                                <div class="slds-form-element">
+                                                    <label class="slds-checkbox_toggle slds-grid">
+                                                        <input type="checkbox" name="checkbox-toggle-16" value="checkbox-toggle-16" aria-describedby="checkbox-toggle-16" checked={customData.isChecked} data-listid={customData.objectName} onclick={handleCheckBox} data-index={index} data-label={rec.qbCompanyName}/>
+                                                        <span id={customData.objectName} class="slds-checkbox_faux_container">
+                                                            <span class="slds-checkbox_faux"></span>
+                                                        </span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </template>
+                                <!-- <lightning-button variant="base" label="Add More" title="Add More" onclick={handleAddMoreButton} data-name="addButton"></lightning-button> -->
+                            </div>
+                        </lightning-accordion-section>
+                    </template>
+                    <lightning-button variant="brand" label="Save Changes" title="Save Changes" onclick={handleSaveButton} class="slds-align_absolute-center slds-var-m-top_medium" data-name="saveButton"></lightning-button>
+                </lightning-accordion>
+            </div>
+        </template>
+    </div>
+  </template>

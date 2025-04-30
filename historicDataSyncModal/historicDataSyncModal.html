@@ -1,0 +1,824 @@
+<template>
+    <div if:true={isLoaded} class="slds-align_absolute-center">
+        <!-- <lightning-spinner variant="brand" size="small" alternative-text="Loading"></lightning-spinner> -->
+        <img src={hicGIF} style="width: 26%;margin-top: 10%;" >
+    </div>
+    <!-- <template if:true={isSpinnerLoaded}>
+      <div class="slds-align_absolute-center">
+        <img src={hicGIF} style="width: 26%;margin-top: 10%;" >
+      </div>
+    </template> -->
+    
+      <!-- style="max-width: 80rem !important; width: auto; max-height: 80rem; height: auto;" -->
+        
+    <!-- <div if:true={load}> slds-p-around_large    -->
+        <div class="" id="modal-content-id-1" >
+            <slot>
+                <template if:false={isModalOn}>
+                    <div style="height:0px">
+                        <c-qb_-custom-toast-comp></c-qb_-custom-toast-comp>
+                    </div>
+                    <div class="slds-is-absolute">
+                        <!--     <c-qb_-custom-toast-comp></c-qb_-custom-toast-comp>
+                    -->
+                    </div>
+                    <!-- <lightning-button variant="brand" label="Add Default Mappings" title="Add Default Mappings" onclick={openDefaultPopup} class="slds-m-left_x-small" ></lightning-button> -->
+                    <div class="buttonDivSection slds-align_absolute-center">
+                        <lightning-input class="slds-text-align_center slds-form-element tog" style="color:#747474" type="toggle" label="Switch To Default Mappings?"
+                            message-toggle-inactive="No"
+                            message-toggle-active="Yes"
+                            onchange={handlechangeToggle}
+                            checked={tagChecked}>
+                        </lightning-input>
+                    </div>
+                    
+                    
+                    <!-- <lightning-button variant="brand" label="Add Default Mappings" onclick={openDefaultPopup} class="slds-float_right"></lightning-button> -->
+                    <div class="slds-card slds-card_boundary">
+                        <table
+                            class="slds-table slds-wrap slds-table--bordered slds-table--cell-buffer slds-table--striped--align-space slds-table--cell-buffer slds-max-medium-table--stacked-horizontal">
+                            <thead >
+                                <tr class="contractRowCls">
+                                    <th scope="col" style="width: 20px; padding:0px; text-align: center; color: white !important; background-color: #00264d!important;  "></th>
+                                    <th scope="col" style="text-align: center; color: white !important; background-color: #00264d!important;">
+                                        <div class="slds-truncate" title="Quickbook Object"><b>Quickbook Object</b></div>
+                                    </th>
+                                    <th scope="col" style="text-align: center; color: white !important; background-color: #00264d !important;">
+                                        <div class="slds-truncate" title="Salesforce Object"><b>Salesforce Object</b></div>
+                                    </th>
+                                    <th scope="col" style="width: 120px; text-align: center; color: white !important; background-color: #00264d !important;" >
+                                        <div class="slds-truncate slds-float_right" title="Field Mapping"><b>Field Mapping</b></div>
+                                    </th>
+                                    <th scope="col" style="width: 75px; text-align: center; color: white !important; background-color: #00264d !important;">
+                                        <div class="slds-truncate slds-float_right" title="Action"><b>Action</b></div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                                <template if:false={isSfqbConfigNotEmpty}>
+                                    <tr>
+                                        <td colspan=6 style="text-align:center"><label
+                                                class="slds-form-element__label">{loadingMessage}</label></td>
+                                    </tr>
+                                </template>
+                                <template if:true={isSfqbConfigNotEmpty}>
+                                    <template for:each={QbToSfConfigDataList} for:item="objLevRec" for:index="objindex">
+                                        <tr key={objLevRec.Name} data-objconfigid={objLevRec.Name} data-objindex={objindex}
+                                            class="validate-tablerow"
+                                            draggable="true"
+                                            ondrop={Drop}
+                                            ondragstart={DragStart}
+                                            ondragover={DragOver} >
+
+                                            
+
+                                            <td style="width: 20px; padding:0px" class={vfpageErrorIconCss}>
+                                                <lightning-icon style="display: none;" class="validation-error"
+                                                    icon-name="utility:warning" title="Row has Duplicate value"
+                                                    alternative-text="Warning!" variant="error" size="x-small"></lightning-icon>
+                                            </td>
+                                            <td data-label="QBEntity">
+                
+                                                <c-qb_-auto-complete-dropdown-custom name="hic_qbmadeasy__QB_Entity__c"
+                                                    class="validation-check-class auto-complete-dropdown-class"
+                                                    options={QbObjectTypeOptionsList} data-fieldapiname="IntegrationReferenceId__c"
+                                                    placeholder="Select QB Object Type" value={objLevRec.hic_qbmadeasy__QB_Entity__c}
+                                                    data-index={objindex} onchange={setUpdatedValuetoObjConfigRecord}
+                                                >
+                                                </c-qb_-auto-complete-dropdown-custom>
+                                            </td>
+                                            <td data-label="SFEntity">
+                
+                                                <c-qb_-auto-complete-dropdown-custom name="hic_qbmadeasy__SF_Entity__c"
+                                                    class="validation-check-class auto-complete-dropdown-class sf-entity-Name"
+                                                    options={sObjectOptions} data-fieldapiname="SobjectName__c"
+                                                    placeholder="Select Sobject" data-index={objindex} value={objLevRec.hic_qbmadeasy__SF_Entity__c}
+                                                    onchange={setUpdatedValuetoObjConfigRecord}></c-qb_-auto-complete-dropdown-custom>
+                                            </td>
+                                            
+                
+                                            
+                                        
+                                            <td data-label="Expand Configuration">
+                                                <div class="slds-align_absolute-center">
+                                                    <div if:true={objLevRec.showSpinner} class="loader"
+                                                        style="position:absolute;margin-left:2.8rem;width:14px;height:14px"></div>
+                                                    <div onclick={expandCollapseFunction} data-index={objindex}
+                                                        data-configid={objLevRec.Id} data-switchto="expand" title="Click to Expand"
+                                                        class="expand-collapse-container">
+                                                        <lightning-icon icon-name="utility:add" alternative-text="Utility Settings"
+                                                            size="x-small" class="add-collapse-icon"></lightning-icon>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td data-label="Action">
+                                                <div class="slds-media__body slds-float_right" data-objconfigid={objLevRec.Name}>
+                                                    <lightning-button-menu alternative-text="Show menu" icon-size="small"
+                                                        menu-alignment="right">
+                                                        <!-- <lightning-menu-item value="Clone" label="Clone"
+                                                            onclick={cloneSfToqbObjectConfigRecord}></lightning-menu-item> -->
+                                                        <lightning-menu-item value="Delete" label="Delete"
+                                                            onclick={deleteSfToqbObjectConfigRecord}></lightning-menu-item>
+                                                        <!-- Menu item for matching rules -->
+                                                        <lightning-menu-item 
+                                                        value="Configure Matching Rules" 
+                                                        label="Configure Matching Rules" 
+                                                        onclick={configureMatchingRuleModal}
+                                                        data-matchingruleconditions = {objLevRec.hic_qbmadeasy__Matching_Rule_Criteria__c}
+                                                        data-configid={objLevRec.Id}
+                                                        data-index={objindex}
+                                                        data-qbobject={objLevRec.hic_qbmadeasy__QB_Entity__c}
+                                                        data-sfobject={objLevRec.hic_qbmadeasy__SF_Entity__c}
+                                                        ></lightning-menu-item>
+                                                    </lightning-button-menu>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        
+                                        <tr key={objLevRec.Name} data-objconfigid={objLevRec.Name} class="collapse-row">
+                                            
+                                            <td colspan=6>
+                                                <div class="FieldMappingTableClass">
+                                                    <div class="slds-card slds-card_boundary " >
+                                                        
+                                                        <table
+                                                            class="slds-table slds-wrap slds-table--bordered slds-table--cell-buffer slds-table--striped--align-space slds-table--cell-buffer slds-max-medium-table--stacked-horizontal">
+                                                            <thead>                                 
+                                                                <tr class="contractRowCls">
+                                                                    <th scope="col" class="fieldHeadingCss" >
+                                                                        <div class="slds-truncate" title="Data Mapping Type"><b>Data Mapping
+                                                                                Type</b></div>
+                                                                    </th>
+                                                                    <th scope="col" class="fieldHeadingCss" >
+                                                                        <div class="slds-truncate" title="Salesforce Field"><b> Salesforce Field</b>
+                                                                        </div>
+                                                                    </th>
+                                                                    
+                                                                    <th scope="col" class="fieldHeadingCss" >
+                                                                        <div class="slds-truncate" title="Constant"><b>Constant</b>
+                                                                        </div>
+                                                                    </th>
+                                                                    <th scope="col" class="fieldHeadingCss" >
+                                                                        <div class="slds-truncate" title="Quickbook field"><b>Quickbook field</b>
+                                                                        </div>
+                                                                    </th>
+                                                                    
+                
+                                                                    <th scope="col"  class="fieldHeadingCss">
+                                                                        <div class="slds-truncate" title="Related Field"><b>Related Field</b>
+                                                                        </div>
+                                                                    </th> 
+                                                                    <th scope="col" class="fieldHeadingCss">
+                                                                        <div class="slds-truncate" title="Add Related Mappings"><b></b>
+                                                                        </div>
+                                                                    </th> 
+                                                                    <th scope="col" style="width: 75px; " class="fieldHeadingCss">
+                                                                        <div class="slds-truncate slds-float_right"
+                                                                            title="Action"><b>Action</b></div>
+                                                                    </th>
+                
+                                                                </tr>
+                                                                
+                                                            </thead>
+                                                            
+                                                            <tbody>
+                                                                <template for:each={objLevRec.fieldsJson} for:item="fieldRec"
+                                                                    for:index="fldindex">
+                                                                    <tr key={fieldRec.Name} data-objconfigid={objLevRec.Name} class="validate-field-row"
+                                                                        data-fldconfigid={fieldRec.Name}>
+                                                                        <td data-label="mappingType">
+                                                                            <lightning-combobox
+                                                                                name="hic_qbmadeasy__Data_Mapping_Type__c" label="" 
+                                                                                value={fieldRec.hic_qbmadeasy__Data_Mapping_Type__c}
+                                                                                placeholder="Select Mapping Type"
+                                                                                options={MappingTypeOptions} variant="label-hidden"
+                                                                                onchange={setUpdatedValuetoFieldRecObj}>
+                                                                            </lightning-combobox>
+                                                                        </td>
+                                                                        
+                                                                        <td data-label="sf_fieldName" class="validation-sf-field">
+                                                                            <template
+                                                                                if:false={fieldRec.hic_qbmadeasy__isRelatedMap__c}>
+                                                                                
+                                                                                    <lightning-input name="hic_qbmadeasy__SF_Field__c"
+                                                                                        class="validation-check-for-sf-field"
+                                                                                        variant="label-hidden" label="" type="text"
+                                                                                        data-sobjectname={objLevRec.hic_qbmadeasy__SF_Entity__c}
+                                                                                        data-parentobjectname={fieldRec.hic_qbmadeasy__SF_Parent_Object__c}
+                                                                                        data-parentobject2name={fieldRec.hic_qbmadeasy__SF_Parent_Object2__c}
+                                                                                        value={fieldRec.hic_qbmadeasy__SF_Field_Label__c}
+                                                                                        onclick={openSfFieldSelectionPopup}
+                                                                                        autocomplete="off"
+                                                                                        readonly
+                                                                                        style="padding-left: 0.75rem;border: 1px solid #C9C9C9;border-radius:.25rem"
+                                                                                    >
+                                                                                    </lightning-input>
+                                                                                
+                                                                                
+                                                                            </template>
+                                                                            <template if:true={fieldRec.hic_qbmadeasy__isRelatedMap__c}>
+                
+                
+                                                                                <c-qb_-auto-complete-dropdown-custom
+                                                                                    name="hic_qbmadeasy__SFChildRelationshipName__c"
+                                                                                    class="auto-complete-dropdown-class validation-check-for-sf-field"
+                                                                                    options={objLevRec.childSobjList}
+                                                                                    placeholder="Select SF Field"
+                                                                                    value={fieldRec.hic_qbmadeasy__SFChildRelationshipName__c}
+                                                                                    onchange={setUpdatedValuetoFieldRecObj}>
+                                                                                </c-qb_-auto-complete-dropdown-custom>
+                                                                            </template>
+                                                                        </td>
+                                                                        
+                                                                        <td data-label="isConstant" title="Constant">
+                                                                            <template
+                                                                                if:false={fieldRec.hic_qbmadeasy__isRelatedMap__c}>
+                
+                                                                                <template if:true={fieldRec.hic_qbmadeasy__Constant__c}>
+                                                                                    <lightning-input type="checkbox"
+                                                                                        variant="label-hidden"
+                                                                                        name="hic_qbmadeasy__Constant__c" label=""
+                                                                                        onchange={setUpdatedValuetoFieldRecObj} checked>
+                                                                                    </lightning-input>
+                                                                                </template>
+                                                                                <template
+                                                                                    if:false={fieldRec.hic_qbmadeasy__Constant__c}>
+                                                                                    <lightning-input type="checkbox"
+                                                                                        variant="label-hidden"
+                                                                                        name="hic_qbmadeasy__Constant__c" label=""
+                                                                                        onchange={setUpdatedValuetoFieldRecObj}>
+                                                                                    </lightning-input>
+                                                                                </template>
+                                                                            </template>
+                                                                            <template if:true={fieldRec.hic_qbmadeasy__isRelatedMap__c}>
+                                                                                <template if:true={fieldRec.hic_qbmadeasy__Constant__c}>
+                                                                                    <lightning-input type="checkbox"
+                                                                                        variant="label-hidden"
+                                                                                        name="hic_qbmadeasy__Constant__c" label=""
+                                                                                        checked disabled></lightning-input>
+                                                                                </template>
+                                                                                <template
+                                                                                    if:false={fieldRec.hic_qbmadeasy__Constant__c}>
+                                                                                    <lightning-input type="checkbox"
+                                                                                        variant="label-hidden"
+                                                                                        name="hic_qbmadeasy__Constant__c" label=""
+                                                                                        disabled></lightning-input>
+                                                                                </template>
+                                                                            </template>
+                                                                        </td>
+                                                                        <td data-label="qb_fieldName">
+                                                                            <template if:false={fieldRec.hic_qbmadeasy__isRelatedMap__c}>
+                                                                                <template if:false={fieldRec.hic_qbmadeasy__Constant__c}>
+                                                                                <c-qb_-auto-complete-dropdown-custom name="hic_qbmadeasy__Quickbook_Field__c" class="auto-complete-dropdown-class validation-check-for-sf-field" options={objLevRec.qbtypeFieldsList} data-contracttype={objLevRec.hic_qbmadeasy__QB_Entity__c} placeholder="Select QB Field" value={fieldRec.hic_qbmadeasy__Quickbook_Field__c} onchange={setUpdatedValuetoFieldRecObj}></c-qb_-auto-complete-dropdown-custom>
+                                                                                </template>
+                                                                                <template if:true={fieldRec.hic_qbmadeasy__Constant__c}>
+                                                                                <template if:true={fieldRec.isDate}>
+                                                                                    <lightning-input type="date" name="hic_qbmadeasy__Quickbook_Field__c" variant="label-hidden" value={fieldRec.hic_qbmadeasy__Quickbook_Field__c} onchange={setUpdatedValuetoFieldRecObj} class = "validation-check-for-sf-field"></lightning-input>
+                                                                                </template>
+                
+                                                                                <template if:true={fieldRec.isTime}>
+                                                                                    <lightning-input type="time" name="hic_qbmadeasy__Quickbook_Field__c" variant="label-hidden" value={fieldRec.hic_qbmadeasy__Quickbook_Field__c} onchange={setUpdatedValuetoFieldRecObj} class = "validation-check-for-sf-field"></lightning-input>
+                                                                                </template>
+                
+                                                                                <template if:true={fieldRec.isDateTime}>
+                                                                                    <lightning-input type="datetime" name="hic_qbmadeasy__Quickbook_Field__c" variant="label-hidden" value={fieldRec.hic_qbmadeasy__Quickbook_Field__c} onchange={setUpdatedValuetoFieldRecObj} class = "validation-check-for-sf-field"></lightning-input>
+                                                                                </template>
+
+                                                                                <template if:false={fieldRec.isDate}>
+                                                                                    <template if:false={fieldRec.isDateTime}>
+                                                                                        <template if:false={fieldRec.isTime}>
+                                                                                            <lightning-input type="text" name="hic_qbmadeasy__Quickbook_Field__c" variant="label-hidden" value={fieldRec.hic_qbmadeasy__Quickbook_Field__c} onchange={setUpdatedValuetoFieldRecObj} class = "validation-check-for-sf-field"></lightning-input>
+                                                                                        </template>
+                                                                                    </template>
+                                                                                </template>
+
+                                                                                <!-- <lightning-input type="text" name="hic_qbmadeasy__Quickbook_Field__c" variant="label-hidden" value={fieldRec.hic_qbmadeasy__Quickbook_Field__c} onchange={setUpdatedValuetoFieldRecObj}></lightning-input> -->
+                                                                                </template>
+                                                                            </template>
+                                                                            <template if:true={fieldRec.hic_qbmadeasy__isRelatedMap__c}>
+                                                                                <c-qb_-auto-complete-dropdown-custom name="hic_qbmadeasy__Quickbook_Field__c" class="auto-complete-dropdown-class validation-check-for-sf-field" options={objLevRec.qbtypeTableList} data-contracttype={objLevRec.hic_qbmadeasy__QB_Entity__c} placeholder="Select QB Field" value={fieldRec.hic_qbmadeasy__Quickbook_Field__c} onchange={setUpdatedValuetoFieldRecObj}></c-qb_-auto-complete-dropdown-custom>
+                                                                            </template>
+                                                                            </td>
+                                                                        
+                
+                                                                        <td data-label="Related List Fields">
+                                                                            <template
+                                                                                if:false={fieldRec.hic_qbmadeasy__isRelatedMap__c}>
+                                                                                <div style="width: 10rem;">
+                                                                                    <lightning-pill-container 
+                                                                                    items={fieldRec.hic_qbmadeasy__RelatedDataValues__c}
+                                                                                    onitemremove={removeRelMappingsFromContainerList}
+                                                                                    style="background-color: rgb(233, 234, 236)">
+                                                                                </lightning-pill-container>
+                                                                                </div>
+                                                                                
+                                                                            </template>
+                                                                            <template if:true={fieldRec.hic_qbmadeasy__isRelatedMap__c}>
+                                                                                <div style="width: 10rem;">
+                                                                                    <lightning-pill-container
+                                                                                    items={fieldRec.hic_qbmadeasy__RelatedDataValues__c}
+                                                                                    onitemremove={removeRelMappingsFromContainerList}>
+                                                                                </lightning-pill-container>
+                                                                                </div>
+                                                                                
+                                                                            </template>
+                                                                        </td>
+                                                                        <td data-label="Add Related Fields">
+                                                                            <lightning-button variant="base"
+                                                                                if:true={fieldRec.hic_qbmadeasy__isRelatedMap__c}
+                                                                                data-sffieldname={fieldRec.hic_qbmadeasy__SF_Field__c}
+                                                                                data-cpfieldname={fieldRec.hic_qbmadeasy__Quickbook_Field__c}
+                                                                                label="Add" onclick={openRelfldMappingPopup}
+                                                                                class="slds-m-left_x-small"></lightning-button>
+                                                                        </td>
+                                                                        <td data-label="Action">
+                                                                            <div class="slds-media__body slds-float_right"
+                                                                                data-objconfigid={objLevRec.Name}
+                                                                                data-fldconfigid={fieldRec.Name}>
+                                                                                <lightning-button-menu alternative-text="Show menu"
+                                                                                    icon-size="small" menu-alignment="right">
+                                                                                    <lightning-menu-item value="Clone" label="Clone"
+                                                                                        onclick={cloneSfToqbFieldConfigRecord}>
+                                                                                    </lightning-menu-item>
+                                                                                    <lightning-menu-item value="Delete" label="Delete"
+                                                                                        onclick={deleteSfToqbFieldConfigRecord}>
+                                                                                    </lightning-menu-item>
+                                                                                </lightning-button-menu>
+                                                                            </div>
+                                                                        </td>
+                                                                    </tr>
+                                                                </template>
+                                                            </tbody>
+                                                        </table>
+                                                        
+                                                        <div class="addFieldMappingLinkClass slds-form-element__label"
+                                                            data-objconfigid={objLevRec.Name}>
+                                                            <lightning-button variant="base" label="Add Field"
+                                                                onclick={addSFToqbFieldMappingRow}></lightning-button>
+                                                        </div>
+                                                        
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        
+                                        </tr>
+                                        
+                                    </template>
+                                </template>
+                
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Matching Rule Modal -->
+                    <template 
+                    if:true={showMatchingRuleModal} 
+                    >
+                        <section 
+                        role="dialog" 
+                        tabindex="-1" 
+                        class="slds-modal slds-fade-in-open slds-backdrop slds-backdrop_open" 
+                        >
+                          <div 
+                          class="slds-modal__container" 
+                          style="min-width: 55rem;"
+                          >
+                              <!-- Modal/Popup Header -->
+                              <header 
+                              class="slds-modal__header"
+                              >
+                                  <button 
+                                  class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                                  title="Close" 
+                                  onclick={closeMatchingRuleModal}
+                                  >
+
+                                      <lightning-icon 
+                                      icon-name="utility:close" 
+                                      alternative-text="close" 
+                                      size="small"
+                                      ></lightning-icon>
+                                      
+                                      <span 
+                                      class="slds-assistive-text"
+                                      >
+                                      Close</span>
+                                  
+                                    </button>
+
+                                  <h2 
+                                  class="slds-text-heading_medium"
+                                  >
+                                  Configure Matching Rules</h2>
+                              
+                                </header>
+              
+                              <!-- Modal/Popup Body -->
+                              <div 
+                              class="slds-modal__content slds-p-around_medium"
+                              >
+                               
+                                <template 
+                                if:true={matchingRuleConditions}
+                                >
+                                    <table 
+                                    border="1" 
+                                    class="slds-table slds-wrap slds-table--bordered slds-table--striped--align-space "
+                                    >
+                                        
+                                        <thead>
+                                            <tr>
+                                                <th>QUICKBOOKS FIELDS</th>
+                                                <th>CONDITION</th>
+                                                <th>SALESFORCE FIELDS</th>
+                                                <th></th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+                                            <template 
+                                            for:each={matchingRuleConditions} 
+                                            for:item="matchingRule" 
+                                            for:index="matchingRuleIndex"
+                                            >
+                                                <tr 
+                                                key={matchingRule.Id} 
+                                                class="matching-rule-modal-item"
+                                                >
+                                                    <td>
+                                                    <!-- QB Fields Combobox -->
+                                                    <lightning-combobox
+                                                    options={availableQbFieldsListForRule}
+                                                    value={matchingRule.QBFieldApiName}
+                                                    data-index={matchingRuleIndex}
+                                                    onchange={handleChange}
+                                                    data-inputname = "qbfieldname"
+                                                    >
+                                                    </lightning-combobox>
+                                                    </td>
+                                                    
+
+                                                    <td>
+                                                        <lightning-combobox 
+                                                        options={matchingOperatorOptions}
+                                                        value={matchingRule.MatchingOperator}
+                                                        data-index={matchingRuleIndex}
+                                                        onchange={handleChange}
+                                                        data-inputname = "operator"
+                                                        ></lightning-combobox>
+                                                    </td>
+
+                                                    <td>
+                                                        <!-- SF Fields Combobox -->
+                                                        <lightning-combobox
+                                                        options={availableSfFieldsListForRule}
+                                                        value={matchingRule.SalesforceFieldApiName}
+                                                        data-index={matchingRuleIndex}
+                                                        onchange={handleChange}
+                                                        data-inputname = "sffieldname"
+                                                        >
+                                                        </lightning-combobox>
+                                                    </td>
+
+                                                    <td>
+                                                        <template lwc:if={matchingRule.ConditionLogic}>
+                                                            <lightning-combobox 
+                                                            value={matchingRule.ConditionLogic}
+                                                            options={conditionLogicOptions}
+                                                            data-index={matchingRuleIndex}
+                                                            onchange={handleChange}
+                                                            data-inputname = "logic"
+                                                            ></lightning-combobox>
+                                                        </template>
+                                                        <template lwc:else>
+                                                            <lightning-icon 
+                                                            icon-name="utility:add" 
+                                                            size="medium"
+                                                            style="cursor:pointer"
+                                                            class="slds-align_absolute-center add-icon"
+                                                            data-index={matchingRuleIndex}
+                                                            onclick={handleMatchingRuleRowAdd}
+                                                            ></lightning-icon>
+                                                        </template>
+                                                    </td>
+
+                                                    <td>
+                                                        <lightning-icon 
+                                                        icon-name="utility:delete" 
+                                                        size="medium"
+                                                        style="cursor:pointer"
+                                                        class="slds-align_absolute-center remove-icon"
+                                                        data-index={matchingRuleIndex}
+                                                        onclick={handleMatchingRuleRowRemove}
+                                                        ></lightning-icon>
+                                                    </td>
+
+                                                </tr>
+                                            </template>
+                                        </tbody>
+
+                                    </table>
+                                </template>
+
+                                <template 
+                                if:false={matchingRuleConditions}
+                                >
+                                    <div 
+                                    style="display: flex;
+                                    justify-content:center;
+                                    align-items:center">
+                                        <lightning-button 
+                                        label="Get started with Matching Rules" 
+                                        variant="success" 
+                                        style="margin-right:.5rem"
+                                        onclick={handleClick} 
+                                        data-buttonname="getstartedbutton"
+                                        >
+                                        </lightning-button>
+                                        <lightning-helptext 
+                                        content="The Matching Rule Configuration 
+                                        feature in QB Sync Made Easy enables users
+                                        to seamlessly match existing Salesforce records
+                                        with QuickBooks records based on the field matching
+                                        rules selected by the user."
+                                        >
+                                        </lightning-helptext>
+                                    </div>
+                                </template>
+                                
+                              </div>
+
+                              <!-- Modal/Popup Footer -->
+                              <footer class="slds-modal__footer">
+                                <lightning-button label="Save Changes" variant="Success" onclick={saveMatchingRuleConditions}>
+                                </lightning-button>
+                              </footer>
+                          </div>
+                        </section>
+                    </template>
+                
+
+
+                    <div class="addObjConfigLinkClass slds-form-element__label">
+                        <lightning-button variant="base" label="Add" onclick={addSFToqbConfigRow}></lightning-button>
+                    </div>
+                    <!-- <template if:true={inProgress}>
+                        <div class="">
+                            <lightning-spinner variant="" size="small"></lightning-spinner>
+                        </div>
+                    </template> -->
+                    <div class="slds-m-top_medium slds-m-bottom_x-large slds-align_absolute-center ">
+                        <span style="margin-left: 10px;">
+                            <div if:true={inProgress} style="position:relative;display:inline-block">Please Wait...</div>
+                        </span>
+                        
+                    </div>
+                    
+                
+                    <template if:true={displayPopup}>
+                        <section role="dialog" tabindex="-1" aria-modal="true" class="slds-modal slds-fade-in-open">
+                            <div class="slds-modal__container">
+                                <header class="slds-modal__header">
+                                    <!-- <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                                        title="Close" onclick={closeInsertFieldPopup}>
+                                        <lightning-icon icon-name="utility:close" variant="inverse" alternative-text="Close"
+                                            size="medium">
+                                        </lightning-icon>
+                                        <span class="slds-assistive-text">Close</span>
+                                    </button> -->
+                                    <h2 class="slds-text-heading_medium slds-hyphenate">Insert</h2>
+                                </header>
+                                <div class="slds-modal__content slds-p-around_medium" style="min-height: 350px;">
+                                    <div style="height:0px">
+                                        <c-qb_-custom-toast-comp></c-qb_-custom-toast-comp>
+                                    </div>
+                                    <lightning-layout>
+                                        <lightning-layout-item padding="around-small">
+                
+                                            <c-qb_-auto-complete-dropdown-custom name="sffieldName" options={sobjectFieldList} data-objconfigidcustom={relObjConfigId} data-fldconfigidcustom={relFldConfigId}
+                                                data-type="primary" class="auto-complete-dropdown-class" placeholder="Select SF Field"
+                                                value={sfFieldsSelObj.sffieldName} onchange={setUpdatedValuetoSfFieldRec}>
+                                            </c-qb_-auto-complete-dropdown-custom>
+                                        </lightning-layout-item>
+                                        <template if:true={sfFieldsSelObj.isReferenceMapping}>
+                
+                                            <template if:true={isSFReferenceObjNotNull}>
+                                                <lightning-layout-item padding="around-small">
+                                                    <c-qb_-auto-complete-dropdown-custom name="sfparentFieldName" data-objconfigidcustom={relObjConfigId} data-fldconfigidcustom={relFldConfigId}
+                                                        options={RefrenceFieldList} data-type="secondary"
+                                                        class="auto-complete-dropdown-class" placeholder="Select SF Field"
+                                                        value={sfFieldsSelObj.sfparentFieldName} onchange={setUpdatedValuetoSfFieldRec}>
+                                                    </c-qb_-auto-complete-dropdown-custom>
+                                                </lightning-layout-item>
+                                            </template>
+                
+                                            <template if:true={isSFReferenceObj2NotNull}>
+                                                <lightning-layout-item padding="around-small">
+                                                    <c-qb_-auto-complete-dropdown-custom name="sfparentField2Name"
+                                                        options={RefrenceField2List} data-type="tertiary"
+                                                        class="auto-complete-dropdown-class" placeholder="Select SF Field"
+                                                        value={sfFieldsSelObj.sfparentField2Name}
+                                                        onchange={setUpdatedValuetoSfFieldRec}></c-qb_-auto-complete-dropdown-custom>
+                                                </lightning-layout-item>
+                                            </template>
+                
+                                        </template>
+                                    </lightning-layout>
+                                </div>
+                                <footer class="slds-modal__footer" data-objconfigid={relObjConfigId} data-fldconfigid={relFldConfigId}>
+                                    <span style="margin-left: 10px;">
+                                        <lightning-button label="Save" variant="brand" onclick={saveSfFieldNameValue}>
+                                        </lightning-button>
+                                    </span>
+                                    <span style="margin-left: 10px;">
+                                        <lightning-button label="Cancel" variant="neutral" onclick={closeInsertFieldPopup}>
+                                        </lightning-button>
+                                    </span>
+                                </footer>
+                            </div>
+                        </section>
+                        <div class="slds-backdrop slds-backdrop_open"></div>
+                    </template>
+                
+                    <template if:true={reldatadisplayPopup}>
+                        <section role="dialog" tabindex="-1" aria-modal="true" class="slds-modal slds-modal_large slds-fade-in-open">
+                            <div class="slds-modal__container">
+                                <header class="slds-modal__header">
+                                    <!-- <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                                        title="Close" onclick={closeInsertFieldPopup}>
+                                        <lightning-icon icon-name="utility:close" variant="inverse" alternative-text="Close"
+                                            size="medium">
+                                        </lightning-icon>
+                                        <span class="slds-assistive-text">Close</span>
+                                    </button> -->
+                                    <h2 class="slds-text-heading_medium slds-hyphenate">Related</h2>
+                                </header>
+                
+                                <div class="slds-modal__content slds-p-around_medium" style="min-height: 350px;">
+                                    <div class="slds-text-align_center">
+                
+                                        <c-qb_-qb-to-sf-rel-fields-mapping-comp related-data-list={RelFieldsMappingList}
+                                            sf-child-object-name={sfChildObjName} cp-child-object-fields={cpChildObjFields}
+                                            onrelmappingconfigchange={setUpdatedRelMappings}></c-qb_-qb-to-sf-rel-fields-mapping-comp>
+    
+                                    </div>
+                                </div>
+                                <footer class="slds-modal__footer" data-objconfigid={relObjConfigId} data-fldconfigid={relFldConfigId}>
+                                    <span style="margin-left: 10px;">
+                                        <lightning-button label="Save Related Mapping" variant="brand" onclick={saveRelDataMappings}>
+                                        </lightning-button>
+                                    </span>
+                                    <span style="margin-left: 10px;">
+                                        <lightning-button label="Cancel" variant="neutral" onclick={closeInsertFieldPopup}>
+                                        </lightning-button>
+                                    </span>
+                                </footer>
+                            </div>
+                        </section>
+                        <div class="slds-backdrop slds-backdrop_open"></div>
+                    </template>
+                </template>   
+            </slot>
+        </div>
+        <footer class="" data-objconfigid={relObjConfigId} data-fldconfigid={relFldConfigId}>
+            <span style="margin-left: 10px;">
+                <div class="buttonDivSection slds-align_absolute-center">
+                    <lightning-button disabled={inProgress} variant="brand" name="Save" label="Save All" title="Save Configuration"
+                            onclick={saveAllSfToqbConfigData} class="slds-m-left_x-small"></lightning-button>
+                    <lightning-button disabled={inProgress} variant="success" name="Sync" label="Save And Sync" title="Save Start Sync"
+                    onclick={saveAllSfToqbConfigData} class="slds-m-left_x-small"></lightning-button>
+                </div>
+            </span>
+            
+        </footer>
+    <!-- </div> -->
+    <!-- <div if:false={load}>
+
+    </div> -->
+            
+            
+        
+        <!-- <div class="slds-modal__footer">
+            <div class="buttonDivSection">
+                <lightning-button disabled={inProgress} variant="brand" label="Save All" title="Save Configuration"
+                        onclick={saveAllSfToqbConfigData} class="slds-m-left_x-small"></lightning-button>
+            </div>
+          </div> -->
+    
+    <!-- Generic spinner -->
+    <template
+    lwc:if={showGenericSpinner}
+    >
+        <lightning-spinner
+        alternative-text="Loading"
+        size="small"
+        variant="brand"
+        class="custom-spinner"
+        ></lightning-spinner>
+    </template>
+    <!-- updated here -->
+    <template
+    lwc:elseif={inProgress}
+    >
+        <lightning-spinner
+        alternative-text="Loading"
+        variant="brand"
+        size="small"
+        class="custom-spinner"
+        ></lightning-spinner>
+    </template>
+
+    <!-- MyLwcModal.html -->
+    <template if:true={showModalDefault}>
+        <div style="height:70% ;">
+        <section role="dialog" tabindex="-1" aria-modal="true" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container"  >
+                <header class="slds-modal__header slds-box slds-theme_shade slds-theme_alert-texture">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                        title="Close" onclick={closeDefaultPopup}>
+                        <lightning-icon icon-name="utility:close" variant="inverse" alternative-text="Close"
+                            size="medium">
+                        </lightning-icon>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <h2 class="slds-text-heading_medium slds-hyphenate">Insert Default Mapping</h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium slds-box slds-theme_shade slds-theme_alert-texture" style="min-height: 250px;">
+                    
+                    <h1>Please select one of the options:</h1>
+                <div class="slds-card slds-card_boundary">    
+                <table border="1" class="slds-table slds-wrap slds-table--bordered slds-table--cell-buffer slds-table--striped--align-space slds-table--cell-buffer slds-max-medium-table--stacked-horizontal">
+                    <thead>
+                        <tr class="contractRowCls">
+                            
+                                <th scope="col" style="width: 20px; padding:0px; text-align: center; color: white !important; background-color: #00264d!important;  ">
+                                    <div class="slds-truncate" title="Default mapping">
+                                        <input type="checkbox" onchange={selectall} value ="all" data-value="option0" />
+                                    </div>
+                                </th>
+                                <th scope="col" style="width: 20px; padding:0px; text-align: center; color: white !important; background-color: #00264d!important;  ">
+                                    <div class="slds-truncate" title="Default mapping"><b>QB Object</b></div>
+                                </th>
+                                <th scope="col" style="width: 20px; padding:0px; text-align: center; color: white !important; background-color: #00264d!important;  ">
+                                    <div class="slds-truncate" title="Default mapping"><b>SF Object</b></div>
+                                </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="width: 20px; padding:0px; text-align: center;">
+                                <input type="checkbox"  value="cus-acc" data-value="option1" />
+                            </td>
+                            <td style="width: 20px; padding:0px; text-align: center;">Customer</td>
+                            <td style="width: 20px; padding:0px; text-align: center; ">Account</td>
+                        </tr>
+                        <tr>
+                            <td style="width: 20px; padding:0px; text-align: center;">
+                                <input type="checkbox"  value="Item-prod" data-value="option2" />
+                            </td>
+                            <td style="width: 20px; padding:0px; text-align: center;">Item</td>
+                            <td style="width: 20px; padding:0px; text-align: center;">Product</td>
+                        </tr>
+                        <tr>
+                            <td style="width: 20px; padding:0px; text-align: center; ">
+                                <input type="checkbox"  value="est-opp" data-value="option3" />
+                            </td>
+                            <td style="width: 20px;padding:0px; text-align: center;">Estimate</td>
+                            <td style="width: 20px; padding:0px; text-align: center;">Opportunity</td>
+                        </tr>
+                        <!--
+                        <tr>
+                            <td style="width: 20px; padding:0px; text-align: center;">
+                                <input type="checkbox"  value="est-opp" data-value="option4" />
+                            </td>
+                            <td style="width: 20px; padding:0px; text-align: center;">Estimate</td>
+                            <td style="width: 20px; padding:0px; text-align: center;">Opportunity</td>
+                        </tr> -->
+                    </tbody>
+                </table>
+                </div>
+                </div>
+                <footer class="slds-modal__footer slds-box slds-theme_shade slds-theme_alert-texture" >
+                    <span style="margin-left: 10px;">
+                        <lightning-button label="Add Mappings" variant="brand" onclick={OnAddMappings}>
+                        </lightning-button>
+                    </span>
+                    <span style="margin-left: 10px;">
+                        <lightning-button label="Cancel" variant="neutral" onclick={closeDefaultPopup}>
+                        </lightning-button>
+                    </span>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+        </div>
+        
+    </template>
+
+              
+  
+    
+
+  </template>

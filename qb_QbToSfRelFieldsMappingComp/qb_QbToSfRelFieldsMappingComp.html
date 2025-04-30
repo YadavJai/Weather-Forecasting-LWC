@@ -1,0 +1,212 @@
+<template>
+    <template if:false={qbToSf}>
+        <table
+            class="slds-table slds-wrap slds-table--bordered slds-table--cell-buffer slds-table--striped--align-space slds-table--cell-buffer slds-max-medium-table--stacked-horizontal">
+            <thead>
+                <tr class="contractRowCls">
+                    <th scope="col" style="color: white !important; background-color: #2530ad!important">
+                        <div class="slds-truncate" title="Salesforce Related Field"><b>Salesforce Related Field</b></div>   
+                    </th>
+                    <th scope="col" style="color: white !important; background-color: #2530ad!important">
+                        <div class="slds-truncate" title="Constant Value"><b>Constant Value</b></div>
+                    </th>
+                    <th scope="col" style="color: white !important; background-color: #2530ad!important">
+                        <div class="slds-truncate" title="Quickbooks Related Field"><b>Quickbooks Related Field </b></div> 
+                    </th>
+                    <th scope="col" style="color: white !important; background-color: #2530ad!important; width: 75px;">
+                        <div class="slds-truncate" title="Add Related Mapping"></div>
+                    </th>
+                    <th scope="col" style="color: white !important; background-color: #2530ad!important; width: 75px;">
+                        <div class="slds-truncate" title="Remove Related Mapping"></div>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <!--<template for:each={SobjOprMappingObject} for:item="objMapRec" for:index="mapindex">-->
+                <template iterator:objmaprec={VisibleRelatedMappingDataList}>
+                    <tr key={objmaprec.value.configId} data-configid={objmaprec.value.configId} class="validate-field-row">
+                        
+                        <td data-label="sf_fieldName">
+                            <!-- <template if:false={objmaprec.value.isConstant}> -->
+                            
+                                <!--
+                                <lightning-combobox name="sf_fieldName" label="" value={objmaprec.value.sf_fieldName}  data-fieldlabel="sf_fieldLabel"
+                                variant="label-hidden" placeholder="Select Child Object Field" options={sfchildObjectFieldList}  onchange={setUpdatedValuetochildObjMapRec}  ></lightning-combobox>-->
+                                <c-qb_-auto-complete-dropdown-custom name="sf_fieldName" data-fieldlabel="sf_fieldLabel"
+                                    data-type="primary"
+                                    class="validation-check-class validation-check-for-sf-field auto-complete-dropdown-class sf-entity-Name slds-var-p-vertical_xxx-small"
+                                    options={sfchildObjectFieldList} placeholder="Select Child Object Field"
+                                    value={objmaprec.value.sf_fieldName} onchange={setUpdatedValuetochildObjMapRec}>
+                                </c-qb_-auto-complete-dropdown-custom>
+
+                                <template if:true={objmaprec.value.isReferenceMapping}>
+                                    <template if:true={objmaprec.value.isSFReferenceObjNotNull}>
+                                        <c-qb_-auto-complete-dropdown-custom name="sf_field2Name"
+                                            data-fieldlabel="sf_field2Label" data-type="secondary"
+                                            class="validation-check-class validation-check-for-sf-field auto-complete-dropdown-class sf-entity-Name slds-var-p-vertical_xxx-small"
+                                            options={objmaprec.value.referenceFieldList} placeholder="Select Reference Field"
+                                            value={objmaprec.value.sf_field2Name}
+                                            onchange={setUpdatedValuetochildObjMapRec}>
+                                        </c-qb_-auto-complete-dropdown-custom>
+                                    </template>
+                                </template>
+                            
+                            <!-- <template if:true={objmaprec.value.isConstant}>
+                                <lightning-input type="text" name="sf_fieldName" data-fieldlabel="sf_fieldLabel" class="validation-check-for-sf-field"
+                                    variant="label-hidden" value={objmaprec.value.sf_fieldName}
+                                    onchange={setUpdatedValuetochildObjMapRec}></lightning-input>
+                            </template> -->
+                        </td>
+                        <td data-label="isConstant">
+                            <template if:true={objmaprec.value.isConstant}>
+                                <lightning-input type="checkbox" variant="label-hidden" name="isConstant" label=""
+                                    onchange={setUpdatedValuetochildObjMapRec} checked></lightning-input>
+                            </template>
+                            <template if:false={objmaprec.value.isConstant}>
+                                <lightning-input type="checkbox" variant="label-hidden" name="isConstant" label=""
+                                    onchange={setUpdatedValuetochildObjMapRec}></lightning-input>
+                            </template>
+                        </td>
+                        <td data-label="qb_fieldName">
+                            <!-- <lightning-combobox name="qb_fieldName" label="" value={objmaprec.value.qb_fieldName} data-fieldlabel="cp_fieldLabel"
+                            placeholder="Select SF Operation" variant="label-hidden" options={SfOperationList}  onchange={setUpdatedValuetoObjMapRec} ></lightning-combobox> -->
+                            <!-- <lightning-input type="text" variant="label-hidden" label="" name="qb_fieldName" data-fieldlabel="cp_fieldLabel" value={objmaprec.value.qb_fieldName}  onchange={setUpdatedValuetochildObjMapRec} ></lightning-input> -->
+
+                            <!--   <lightning-combobox name="qb_fieldName" label="" value={objmaprec.value.qb_fieldName}  data-fieldlabel="cp_fieldLabel"
+                            variant="label-hidden" placeholder="Select Table Field" options={cpchildObjectFieldList}  onchange={setUpdatedValuetochildObjMapRec}  ></lightning-combobox>
+                            -->
+                            <template if:false={objmaprec.value.isConstant}>
+                            <c-qb_-auto-complete-dropdown-custom name="qb_fieldName"
+                                class="validation-check-class validation-check-for-sf-field auto-complete-dropdown-class sf-entity-Name"
+                                options={cpchildObjectFieldList} data-fieldlabel="cp_fieldLabel"
+                                placeholder="Select Table Field" value={objmaprec.value.qb_fieldName}
+                                onchange={setUpdatedValuetochildObjMapRec}></c-qb_-auto-complete-dropdown-custom>
+                            </template>    
+                            <template if:true={objmaprec.value.isConstant}>
+                                <lightning-input type="text" name="qb_fieldName" data-fieldlabel="cp_fieldLabel" class="validation-check-for-sf-field validation-check-class"
+                                    variant="label-hidden" value={objmaprec.value.qb_fieldName}
+                                    onchange={setUpdatedValuetochildObjMapRec}></lightning-input>
+                                
+                            </template>
+                        </td>
+                        
+                        <td data-label="Add Sobj Mapping">
+                            <div onclick={addBlankMappingFunction} title="Click to Add" class="slds-float_right">
+                                <lightning-icon icon-name="utility:add" alternative-text="Utility Settings"
+                                    size="x-small"></lightning-icon>
+                            </div>
+                        </td>
+                        <td data-label="Remove Sobj Mapping">
+                            <template if:false={disableRemoveButton}>
+                                <div onclick={removeMappingFunction} title="Click to Remove"  class="slds-float_right">
+                                    <lightning-icon icon-name="utility:dash" alternative-text="Utility Settings"
+                                        size="x-small"></lightning-icon>
+                                </div>
+                            </template>
+                            
+                        </td>
+                    </tr>
+                </template>
+            </tbody>
+        </table>
+
+    </template>
+    <template if:true={qbToSf}>
+        <table
+            class="slds-table slds-wrap slds-table--bordered slds-table--cell-buffer slds-table--striped--align-space slds-table--cell-buffer slds-max-medium-table--stacked-horizontal">
+            <thead>
+                <tr class="contractRowCls">
+                    <th scope="col">
+                        <div class="slds-truncate" title={label.SFRelatedFieldLabel}><b>{label.SFRelatedFieldLabel}</b>
+                        </div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate" title={label.ConstantMappingFieldLabel}>
+                            <b>{label.ConstantMappingFieldLabel}</b>
+                        </div>
+                    </th>
+
+                    <th scope="col">
+                        <div class="slds-truncate" title={label.qbRelatedFieldLabel}><b>{label.qbRelatedFieldLabel}</b>
+                        </div>
+                    </th>
+                    <th scope="col" style="width: 75px;">
+                        <div class="slds-truncate" title="Add Related Mapping"></div>
+                    </th>
+                    <th scope="col" style="width: 75px;">
+                        <div class="slds-truncate" title="Remove Related Mapping"></div>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <!--<template for:each={SobjOprMappingObject} for:item="objMapRec" for:index="mapindex">-->
+                <template for:each={RelatedMappingDataList} for:index="mapindex" for:item="objmaprec">
+                    <tr key={objmaprec.configId} data-configid={objmaprec.configId}>
+                        <td data-label="sf_fieldName">
+
+
+
+                            <!--<lightning-combobox name="sf_fieldName" label="" value={objmaprec.value.sf_fieldName}  data-fieldlabel="sf_fieldLabel"
+                                variant="label-hidden" placeholder="Select Child Object Field" options={sfchildObjectFieldList}  onchange={setUpdatedValuetochildObjMapRec}  ></lightning-combobox>-->
+
+
+                            <c-qb_-auto-complete-dropdown-custom name="sf_fieldName" data-fieldlabel="sf_fieldLabel"
+                                class="validation-check-class auto-complete-dropdown-class sf-entity-Name"
+                                options={sfchildObjectFieldList} placeholder="Select Child Object Field"
+                                value={objmaprec.sf_fieldName} onchange={setUpdatedValuetochildObjMapRec}>
+                            </c-qb_-auto-complete-dropdown-custom>
+
+
+                        </td>
+                        <td data-label="isConstant" title={label.ConstantMappingFieldTitleLabel}>
+                            <template if:true={objmaprec.isConstant}>
+                                <lightning-input type="checkbox" variant="label-hidden" name="isConstant" label=""
+                                    onchange={setUpdatedValuetochildObjMapRec} checked></lightning-input>
+                            </template>
+                            <template if:false={objmaprec.isConstant}>
+                                <lightning-input type="checkbox" variant="label-hidden" name="isConstant" label=""
+                                    onchange={setUpdatedValuetochildObjMapRec}></lightning-input>
+                            </template>
+                        </td>
+
+                        <td data-label="qb_fieldName">
+                            <!-- <lightning-combobox name="qb_fieldName" label="" value={objmaprec.value.qb_fieldName} data-fieldlabel="cp_fieldLabel"
+                            placeholder="Select SF Operation" variant="label-hidden" options={SfOperationList}  onchange={setUpdatedValuetoObjMapRec} ></lightning-combobox> -->
+                            <!-- <lightning-input type="text" variant="label-hidden" label="" name="qb_fieldName" data-fieldlabel="cp_fieldLabel" value={objmaprec.value.qb_fieldName}  onchange={setUpdatedValuetochildObjMapRec} ></lightning-input> -->
+
+
+                            <!--Commented by PK on 19th April 
+                                <lightning-combobox name="qb_fieldName" label="" value={objmaprec.value.qb_fieldName}  data-fieldlabel="cp_fieldLabel"
+                            variant="label-hidden" placeholder="Select Table Field" options={cpchildObjectFieldList}  onchange={setUpdatedValuetochildObjMapRec}  ></lightning-combobox>-->
+                            <template if:false={objmaprec.isConstant}>
+
+                                <c-qb_-auto-complete-dropdown-custom name="qb_fieldName" data-fieldlabel="cp_fieldLabel"
+                                    class="validation-check-class auto-complete-dropdown-class sf-entity-Name"
+                                    options={cpchildObjectFieldList} placeholder="Select Table Field"
+                                    value={objmaprec.qb_fieldName} onchange={setUpdatedValuetochildObjMapRec}>
+                                </c-qb_-auto-complete-dropdown-custom>
+                            </template>
+                            <template if:true={objmaprec.isConstant}>
+                                <lightning-input type="text" name="qb_fieldName" data-fieldlabel="cp_fieldLabel"
+                                    variant="label-hidden" value={objmaprec.qb_fieldName}
+                                    onchange={setUpdatedValuetochildObjMapRec}></lightning-input>
+                            </template>
+                        </td>
+                        <td data-label="Add Sobj Mapping">
+                            <div onclick={addMappingFunction} title="Click to Add" class="slds-float_right">
+                                <lightning-icon icon-name="utility:add" alternative-text="Utility Settings"
+                                    size="x-small"></lightning-icon>
+                            </div>
+                        </td>
+                        <td data-label="Remove Sobj Mapping">
+                            <div onclick={removeMappingFunction} title="Click to Add" class="slds-float_right">
+                                <lightning-icon icon-name="utility:dash" alternative-text="Utility Settings"
+                                    size="x-small"></lightning-icon>
+                            </div>
+                        </td>
+                    </tr>
+                </template>
+            </tbody>
+        </table>
+    </template>
+</template>

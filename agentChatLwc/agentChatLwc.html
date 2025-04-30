@@ -1,0 +1,67 @@
+<template>
+    <div class="chat-bot-main-div">
+        <div class="chat-bot-header">
+                <div class="custom-helptext">
+                    <lightning-icon
+                        icon-name="utility:info"
+                        size="medium"
+                        class="custom-helptext-icon"
+                        alternative-text="Help"
+                        onmouseover={showTooltip}
+                        onmouseout={hideTooltip}
+                    ></lightning-icon>
+                    <div if:true={isTooltipVisible} class="custom-tooltip">
+                        You'll receive weekly updates.
+                    </div>
+                </div>
+        </div>
+        <div class="chat-bot-div slds-p-around_medium">
+            <div class="chat-div slds-p-around_medium">
+                <template lwc:if={isQueryInserted}>
+                    <!-- Content to display when isQueryInserted is true -->
+                    <template for:each={queryAndResponseList} for:item="queryOrResponse">
+                        <template if:true={queryOrResponse.isQuery}>
+                            <div class="query-div" key={queryOrResponse}>
+                                <div class="query-title-div">
+                                    <p>{queryOrResponse.query}</p>
+                                </div>
+                                <lightning-icon icon-name="action:user" size="medium"></lightning-icon>
+                            </div>
+                        </template>
+                        <template if:false={queryOrResponse.isQuery}>
+                            <div class="response-div" key={queryOrResponse}>
+                                <lightning-icon icon-name="action:new_custom63" size="medium"></lightning-icon>
+                                <div class="response-title-div">
+                                    <p>{queryOrResponse.response}</p>
+                                </div>
+                            </div>
+                        </template>
+                    </template>
+                </template>
+                <template lwc:else>
+                    <img src={quickieBotUrl} style="height: 20rem;">
+                    <p style="font-size:2rem; text-align:center;">How may I assist you today?</p>
+                </template>
+            </div>
+            <!-- <div class="input-div slds-p-around_medium">
+                <input type="text" class="input-box" placeholder="Enter your query here" >
+                <lightning-icon icon-name="standard:output" size="large" style="cursor: pointer;"></lightning-icon>
+            </div> -->
+            <lightning-layout>
+                <lightning-layout-item size="10">
+                    <input type="text" class="input-box" placeholder="Enter your query here" disabled={disableInputField} onkeydown={handleKeyDown}>
+                </lightning-layout-item>
+                <!-- <lightning-layout-item size="1">
+                </lightning-layout-item> -->
+                <lightning-layout-item size="2">
+                    <template if:false={disableInputField}>
+                        <lightning-icon icon-name="standard:output" size="large" style="cursor: pointer;margin-left:1rem" onclick={handleQueryInsertion}></lightning-icon>
+                    </template>
+                    <template if:true={disableInputField}>
+                        <span class="loader" style="margin-left: 1rem;"></span>
+                    </template>
+                </lightning-layout-item>
+            </lightning-layout>
+        </div>
+    </div>
+</template>

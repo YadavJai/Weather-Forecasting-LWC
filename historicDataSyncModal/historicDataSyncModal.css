@@ -1,0 +1,143 @@
+.CustomPillContainer{
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+
+.addObjConfigLinkClass{
+    margin-left: 20px;
+}
+.FieldMappingTableClass{
+    /* margin-left: 50px; 
+    margin-right: 50px; */
+}
+/* .ms-dropdown{
+    max-height: 500px;
+    overflow-y: auto;
+}
+.ms-clear-icon{
+    position: absolute;
+}
+.ms-refresh-icon{
+    position: absolute;
+}
+.ms-input{
+    background-color: rgb(255, 255, 255);
+    border: 1px solid rgb(217, 219, 221);
+    border-radius: .25rem;
+    width: 100%;
+    transition: border .1s linear,background-color .1s linear;
+    display: inline-block;
+    padding: 0 1rem 0 .75rem;
+    line-height: 1.875rem;
+    min-height: calc(1.875rem + (1px * 2));
+}
+.ms-filter-input{
+    margin: 0px 5%;
+    width: 50%;
+    height: 30px;
+    border-radius: 2px;
+    border-style: solid;
+    border-width: thin;
+    border-color: darkgray;
+    padding: 2px 5px;
+}
+ .ms-dropdown-height{
+    height:12rem;
+    overflow-y: scroll;
+}
+.custom-ms-picklist-class{
+    line-height: 1.875rem;
+} */ 
+ .slds-modal__container {
+    max-width: 80rem !important;
+    /* width: 80% !important; */
+    max-height: 90rem ;
+    /* height: 80% !important;  */
+} 
+.expand-row{
+    display:table-row;
+    /* background-color: #cce6ff !important; */
+}
+.collapse-row{
+    display:none !important;
+    /* background-color: #cce6ff !important; */
+}
+.validation-error{
+    padding-left: 4px;
+}
+.fieldHeadingCss{
+    text-align: center; 
+    color: white !important; 
+    background-color:#2530ad!important;
+}
+.iconCss{
+    padding-top: 15px ;
+}
+.THIS .slds-pill__remove {
+    display: none !important;
+}
+.loader {
+    border: 2px solid #d5d5d5;
+    border-radius: 50%;
+    border-top: 2px solid #3498db;
+    width: 18px;
+    height: 18px;
+    -webkit-animation: spin 0.8s linear infinite; /* Safari */
+    animation: spin 0.8s linear infinite;
+    display: inline-block;
+    vertical-align: middle;
+  }  
+  /* Safari */
+  @-webkit-keyframes spin {
+    0% { -webkit-transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(360deg); }
+  }  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  .custom-spinner{
+      position: fixed;
+  }
+
+
+  /* .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+  }
+  
+  .modal-content {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 1em;
+    z-index: 1001;
+  }
+  
+  table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+  
+  th,
+  td {
+    border: 1px solid #ddd;
+    padding: 0.5em;
+  }
+  
+  th {
+    text-align: left;
+    background-color: #f4f4f4;
+  }
+   */

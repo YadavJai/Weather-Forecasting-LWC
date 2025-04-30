@@ -1,0 +1,108 @@
+/* setting margin and padding to 0 to remove all uneccessary spaces */
+*{
+    margin:0;
+    padding:0;
+}
+:host{
+    --backgroundColor: #8294EE;
+    --imgsize: 10rem
+}
+
+
+.weather-main-div{
+    padding: 1rem;
+    border-radius: 1rem;
+    background-color: var(--backgroundColor);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.location-text{
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: white;
+}
+
+.weather-header-div{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.slds-form-element__label{
+    color: white  !important;
+}
+
+.temperature-time-div p{
+    font-size: 4rem;
+    font-weight: bold;
+    color: white;
+}
+
+
+.loader {
+    width: 48px;
+    height: 48px;
+    background: #2342e0;
+    display: block;
+    margin: 20px auto;
+    position: relative;
+    box-sizing: border-box;
+    animation: rotationBack 1s ease-in-out infinite reverse;
+}
+.loader::before {
+    content: '';  
+    box-sizing: border-box;
+    left: 0;
+    top: 0;
+    transform: rotate(45deg);
+    position: absolute;
+    width: 48px;
+    height: 48px;
+    background: #3c56d7;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
+}
+.loader::after {
+    content: '';  
+    box-sizing: border-box;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    background: #FFF;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
+}
+@keyframes rotationBack {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(-360deg);
+    }
+}
+.response-main{
+    border-top: 1px solid white;
+    margin-top: .5rem;
+    padding-top: 1rem;
+}
+.response-showing-div{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+.condition-image{
+    height: var(--imgsize);
+}
+.map-container {
+    border-radius: 1rem;
+    border: 1px solid black;
+    overflow: hidden;
+    height: 300px; /* Adjust as needed */
+}
+
+.map-container lightning-map {
+    height: 100%;
+}

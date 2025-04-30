@@ -1,0 +1,18 @@
+<!-- sldsValidatorIgnore -->
+<template>
+    <!-- <lightning-button label="Redirect To Quickbook Record" title="Redirect To Quickbook Record" onclick={handleClickRedirectToQuickbookRecord} class="slds-m-left_x-small"></lightning-button> -->
+    <!-- <button><a href="https://app.sandbox.qbo.intuit.com/app/estimate?txnId=185" target="_blank">Click Here</a></button> -->
+    <!-- <lightning-card>
+        <lightning-button variant="brand" label="Redirect To Quickbook Record" onclick={handleRedirectToQuickbookRecord} class="slds-var-m-left_x-small" ></lightning-button>
+    </lightning-card> -->
+
+    <button class="slds-button slds-button_outline-brand slds-p-horizontal_x-small" onclick={handleRedirectToQuickbookRecord}>
+        <img src = {qbIcon} class="qbicon">
+        { qbButtonLabel }
+    </button>
+    
+    <a class="redirect" style="visibility: hidden;"></a>
+    <div style="height:0px">
+        <c-qb_-custom-toast-comp></c-qb_-custom-toast-comp>
+    </div>
+</template>

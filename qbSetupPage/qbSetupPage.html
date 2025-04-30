@@ -1,0 +1,877 @@
+<template>
+    
+    <!-- <div class="topleft">
+        <a href="https://qbsyncmadeasy.com" target="_blank">
+            <img style="height: 100px" alt="Qb" src={logo}/>
+        </a>  
+    </div> -->
+
+    <c-warning_-modal
+    show-warning-modal={isShowModal}
+    message={message}
+    modal-developer-name={modalDeveloperName}
+    modal-company-id={modalCompanyId}
+    modal-company-index={modalCompanyIndex}
+    onnoevent={hideModal}
+    onyesevent={handleYesEvent}
+    ></c-warning_-modal>
+
+    <article class="slds-card" style="border: none;
+        padding: 0.25rem;
+        background-color: rgba(241,241,241,.5);box-shadow: 0px 2px 2px #6666;">
+          <div class="slds-card__header slds-grid">
+            <header class="slds-media slds-media_center slds-has-flexi-truncate">
+              <div class="slds-media__figure">
+                <span class="slds-icon_container slds-icon-standard-account" title="Setup">
+                  <lightning-icon icon-name="standard:settings" size="medium" style="background-color:#2fb53f">
+                  </lightning-icon>
+                </span>
+              </div>
+              <div class="slds-media__body">
+                <h2 class="slds-card__header-title">
+                  Setup
+                </h2>
+              </div>
+            </header>
+          </div>
+    </article>
+
+    <!-- <div class="topright slds-text-align_center">
+        <a href="https://support.qbsyncmadeasy.com" target="_blank">
+            {SupportWebsite}
+        </a>
+        <br>
+        <a target="_blank" onclick={openContactSupportModal}>
+            {ContactSupportText}
+        </a>
+        <br>
+        <a target="_blank" onclick={openContactWarningModal}>
+            <b><u>{MoreCompanyText}</u></b>
+        </a>
+        <br>
+        <a target="_blank" onclick={toggleDebugging}>
+            <b><u>{debugButtonLabel}</u></b>
+        </a>
+        <br>
+    </div>   -->
+    <div style="margin-left: 0.5rem;
+    margin-top: 1rem">
+    <lightning-card title={currentCompany} icon-name="standard:sales_path" style="border: none;">
+        
+        <lightning-progress-indicator current-step={currentvalue} type="path" variant="base">
+            <lightning-progress-step label="Company Setup" value="1" onclick={pathHandler}></lightning-progress-step>
+            <lightning-progress-step label="Current Company" value="2" onclick={pathHandler} class ={pointerEventsClass}></lightning-progress-step>
+            <lightning-progress-step label="Object And Fields Setup" value="3" onclick={pathHandler} class ={pointerEventsClass}></lightning-progress-step>
+            <lightning-progress-step label="Finished" value="4" onclick={pathHandler} class ={pointerEventsClassForFinish}></lightning-progress-step>
+            <!-- <lightning-progress-step label="Bi-Directional Company Setup" value="5" onclick={pathHandler}></lightning-progress-step> -->
+        </lightning-progress-indicator>
+        <br>
+    </lightning-card>
+
+    <div style="height:0px">
+        <c-qb_-custom-toast-comp></c-qb_-custom-toast-comp>
+    </div>
+
+    <!-- <template if:true={openCompanyConnection}>
+        <div class="modal-container">
+            <div class="modal-content">
+                <h1>Choose a Connection</h1>
+                <p>Select the type of connection:</p>
+                <lightning-button label="SF to QB Connection" onclick={handleSFToQB}></lightning-button>
+                <lightning-button label="QB to SF Connection" onclick={handleQBToSF}></lightning-button>
+            </div>
+        </div>
+    </template> -->
+
+
+
+    <template if:true={isCompanySetupSelected}  >
+        
+        <div if:false={isAlreadyAuthorised} class="slds-align_absolute-center"> 
+            <div if:false={isLoaded} class="slds-align_absolute-center">
+                <lightning-spinner variant="brand" size="small" alternative-text="Loading"></lightning-spinner>
+            </div>
+            <div if:true={isLoaded} class="slds-align_absolute-center" style="margin-top: .5rem;">
+                <!-- <lightning-button variant="brand" label="Connect with Quickbooks Online"  onclick={openModalForEnvironment} class="slds-m-left_x-small"></lightning-button> -->
+                <img onclick={openModalForEnvironment} class="slds-m-left_x-small" src={qbConnectButtonImage} onmouseover={handleConnectToQbButtonHover} onmouseout={handleConnectToQbButtonHoverOut} style="max-width:15rem;cursor:pointer">
+            </div>
+            
+            
+        </div>
+
+        <div if:true={isAlreadyAuthorised}>
+            <div if:false={isLoaded} class="slds-align_absolute-center">
+                <lightning-spinner variant="brand" size="small" alternative-text="Loading"></lightning-spinner>
+            </div>
+            
+            <div class="col-sm-10" id="tableclass2">
+                <table id="myTable2" border="1" class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered">
+                    <thead id="table_head2">
+                        <tr>
+                            <th class="centerHeading" >{ConfigureCompanyNameTxt}</th>
+                            <th class="centerHeading" >{ConfigureCompanyIdTxt}</th>
+                            <th class="centerHeading" style="position: relative;">{ConfigureCompanyStatusTxt}  
+                                <!-- <lightning-icon 
+                                    icon-name="utility:info_alt" 
+                                    alternative-text="info"
+                                    onmouseover={handleHover}
+                                    onmouseout={handleHoverOut}
+                                    size="x-small">
+                                </lightning-icon>  -->
+                                <lightning-icon 
+                                    icon-name="utility:info_alt" 
+                                    alternative-text="info"
+                                    class="info-icon"
+                                    onmouseover={handleHover}
+                                    onmouseout={handleHoverOut}
+                                    size="x-small"
+                                    style="margin-left: .25rem;cursor:pointer"
+                                >
+                                </lightning-icon>
+                                <div class="triangle-bottom"></div>
+                                <!-- <lightning-helptext onmouseover={handleHover} onmouseout={handleHoverOut}></lightning-helptext>    -->
+                                <div class="myModal" role="tooltip" data-id="help" style="
+                                position: absolute;
+                                width: 43rem;
+                                top: 4.1rem;
+                                bottom: 0;
+                                z-index:4;
+                                right: -20rem;
+                                display:none;
+                                color: black;
+                                background: white;">
+                                    <table border="1" class="my-modal-table" style="width: 100%; background:white" >
+                                        <tr >
+                                            <th style="text-align:center;width:20%" ><b>Status</b></th>
+                                        
+                                            <th style="text-align:center;"><b>Details</b></th>
+                                        </tr>
+                                        <tr>
+                                            <td  style="padding: 0px 6px;"> SF <img src={qbAndSfConnectionLogo} alt="Connect Logo" style="width: 2rem;"> QB</td>
+                                            <td> Two-way connection established.</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 0px 6px;"> SF <img src={sfToQbConnectionLogo} alt="Connect Logo" style="width: 2rem;"> QB</td>
+                                            <td> Data from SF can be synced to QB And Historical data can also be Synced from QB to SF.</td>
+                                        </tr><tr>
+                                            <td style="padding: 0px 6px;"> SF <img src={qbToSfConnectionLogo} alt="Connect Logo" style="width: 2rem;"> QB</td>
+                                            <td> QB to SF connection established but no data sync will occur between SF to QB and vice versa.</td>
+                                        </tr><tr>
+                                            <td style="padding: 0px 6px;"> SF <img src={qbAndSfDisConnectedLogo} alt="Connect Logo" style="width: 2rem;"> QB</td>
+                                            <td>No data sync will occur between SF to QB and vice versa.</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </th>
+                            <th class="centerHeading" >{ConfigureActionTxt}</th>
+                        </tr>
+                    </thead>
+                    <template for:each={qbToSfCompanyrecords} for:item="rec" for:index="index" >
+                        <tr key={rec.id} data-index={index}>
+                            <td class ="centerName">{rec.Label}</td>
+                            <td class ="centerName">{rec.hic_qbmadeasy__RealmId__c}</td>
+                            <td class="center" data-index={index}>
+                            <!-- <td data-index={index}> -->
+                                <!-- <template if:true={rec.isConnected}>
+                                    <lightning-badge class="slds-theme_success" label="Connected"></lightning-badge> 
+                                 </template>
+                                 <template if:false={rec.isConnected}>
+                                  <lightning-badge class="slds-theme_error" label="Disconnected" data-index={index}></lightning-badge> 
+                               </template> -->
+                               <template if:true={rec.isSfToQbConnected}>
+                                <template if:true={rec.isQbToSfConnected}>
+                                    SF <img src={qbAndSfConnectionLogo} alt="Connect Logo" style="width: 3rem;"> QB
+                                </template>
+                                <template if:false={rec.isQbToSfConnected}>
+                                    SF <img src={sfToQbConnectionLogo} alt="Connect Logo" style="width: 3rem;"> QB
+                                </template>
+                               </template>
+
+                               <template if:false={rec.isSfToQbConnected}>
+                                <template if:true={rec.isQbToSfConnected}>
+                                    SF <img src={qbToSfConnectionLogo} alt="Connect Logo" style="width: 3rem;"> QB
+                                </template>
+                                <template if:false={rec.isQbToSfConnected}>
+                                    SF <img src={qbAndSfDisConnectedLogo} alt="Connect Logo" style="width: 3rem;"> QB
+                                </template>
+                               </template>
+                               <!-- <template if:true={rec.isConnected}>
+                                    SF <img src={sfToQbConnectionLogo} alt="Connect Logo" style="width: 3rem;"> QB
+                                </template>
+                                <template if:false={rec.isConnected}>
+                                    SF <img src={qbAndSfDisConnectedLogo} alt="Connect Logo" style="width: 3rem;"> QB
+                                </template> -->
+                                 
+                            </td>
+                            <td class="center" data-index={index}>
+                                <lightning-button variant="brand-outline" data-id={rec.id}  data-realmid1={rec.hic_qbmadeasy__RealmId__c} data-label={rec.Label} label="Setup" data-index={index} onclick={onEditCompany}  icon-name="utility:settings" class="slds-button_outline-brand slds-m-left_x-small" ></lightning-button>
+                                <lightning-button  variant="brand-outline" label="Delete" data-realmid1={rec.hic_qbmadeasy__RealmId__c} onclick={deleteClick}  icon-name="utility:delete" data-developername={rec.DeveloperName} data-index={index} class="slds-button_outline-brand slds-m-left_x-small"></lightning-button>
+                                <lightning-button  data-index={index} variant="brand-outline" label="Company Connection" data-id={rec.id} data-qbenvironment={rec.hic_qbmadeasy__Environment__c} data-label={rec.Label} onclick={handleCompanyConnection}  icon-name="utility:link" class="slds-button_outline-brand slds-m-left_x-small slds-p-right_small"></lightning-button>
+                                <!-- <lightning-button variant="brand-outline" label="Disconnect" onclick={handleclick}  icon-name="utility:remove_link" class="slds-button_outline-brand slds-m-left_x-small"></lightning-button> -->
+                                <!-- <template if:true={rec.isConnected}>
+                                    <lightning-button variant="brand-outline" label="Company Connection"  data-index={index} data-realmid1={rec.hic_qbmadeasy__RealmId__c} onclick={handleCompanyConnection}  icon-name="utility:remove_link" class="slds-button_outline-brand slds-m-left_x-small"></lightning-button>
+                               </template>
+                               <template if:false={rec.isConnected}>
+                                   <lightning-button  data-index={index} variant="brand-outline" label="Connect" data-id={rec.id} data-qbenvironment={rec.hic_qbmadeasy__Environment__c} data-label={rec.Label} onclick={handleCompanyConnection}  icon-name="utility:link" class="slds-button_outline-brand slds-m-left_x-small slds-p-right_small"></lightning-button>
+                               </template> -->
+                            </td>
+                        </tr>    
+                    </template>
+                    <tbody id = "table_body3">
+                    </tbody>
+                </table>
+            </div>             
+            <div if:true={isProFeaturesEnabled} class="slds-align_absolute-center" style="margin-top:1% ;">
+                <lightning-button variant="brand" label="Add Another Quickbooks Company"  onclick={openModalForEnvironment} class="slds-m-left_x-small"></lightning-button>
+            </div>                    
+        </div>  
+        
+        
+        <template if:true={openCompanyConnection}>
+            <section role="dialog" tabindex="-1" aria-modal="true" aria-labelledby="modal-heading-01" class="slds-modal slds-fade-in-open slds-modal_small">
+    
+                <div class="slds-modal__container">
+    
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" onclick={handleCompanyConnection}>
+                        <lightning-icon icon-name="utility:close" variant="inverse" alternative-text="Close"
+                        size="medium">
+                        </lightning-icon>
+                        <span class="slds-assistive-text">{ConfigureCancelCloseTxt}</span>
+                    </button>
+    
+                    <div class="slds-modal__content slds-p-around_medium " style="padding-bottom: 10%;" >
+                        <lightning-tabset style="height:3rem" class="slds-tabs_large" >
+                            <lightning-tab label="Salesforce To QuickBooks">
+                                <table border="1" class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered">
+                                    <thead >
+                                        <tr>
+                                            <th class="centerHeading" >{ConfigureCompanyNameTxt}</th>
+                                            <th class="centerHeading" >{ConfigureCompanyStatusTxt}</th>
+                                            <th class="centerHeading" >{ConfigureActionTxt}</th>
+                                        </tr>
+                                    </thead>
+                                    <template for:each={qbToSfCompanySingleRec} for:item="rec" for:index="index" >
+                                        <tr key={rec.id} data-index={index}>
+                                            <td class ="centerName">{rec.Label}</td>
+                                            <td class="center" data-index={index}>
+                                            <!-- <td data-index={index}> -->
+                                                <template if:true={rec.isSfToQbConnected}>
+                                                    <lightning-badge class="slds-theme_success" label="Connected"></lightning-badge> 
+                                                 </template>
+                                                 <template if:false={rec.isSfToQbConnected}>
+                                                  <lightning-badge class="slds-theme_error" label="Disconnected" data-index={index}></lightning-badge> 
+                                                </template>
+                                               <!-- <template if:true={rec.isConnected}>
+                                                    SF <img src={sfToQbConnectionLogo} alt="Connect Logo" style="width: 3rem;"> QB
+                                                </template>
+                                                <template if:false={rec.isConnected}>
+                                                    SF <img src={qbAndSfDisConnectedLogo} alt="Connect Logo" style="width: 3rem;"> QB
+                                                </template> -->
+                                                 
+                                            </td>
+                                            <td class="center" data-index={index}>
+                                                 <!--
+                                                <lightning-button variant="brand-outline" data-id={rec.id}  data-realmid1={rec.hic_qbmadeasy__RealmId__c} data-label={rec.Label} label="Setup" data-index={index} onclick={onEditCompany}  icon-name="utility:settings" class="slds-button_outline-brand slds-m-left_x-small" ></lightning-button>
+                                                <lightning-button  variant="brand-outline" label="Delete" onclick={handleAuthMetadataDelete}  icon-name="utility:delete" data-developername={rec.DeveloperName} data-index={index} class="slds-button_outline-brand slds-m-left_x-small"></lightning-button>
+                                                
+                                                <template if:true={rec.isConnected}>
+                                                    <lightning-button variant="brand-outline" label="Company Connection"  data-index={index} data-realmid1={rec.hic_qbmadeasy__RealmId__c} onclick={handleCompanyConnection}  icon-name="utility:remove_link" class="slds-button_outline-brand slds-m-left_x-small"></lightning-button>
+                                               </template>  -->
+                                               <template if:true={rec.isSfToQbConnected}>
+                                                <!-- <lightning-button variant="brand-outline" label="Company Connection"  data-index={index} data-realmid1={rec.hic_qbmadeasy__RealmId__c} onclick={handleCompanyConnection}  icon-name="utility:remove_link" class="slds-button_outline-brand slds-m-left_x-small"></lightning-button> -->
+                                                <lightning-button data-index={index} data-realmid1={rec.hic_qbmadeasy__RealmId__c} data-qbenvironment={rec.hic_qbmadeasy__Environment__c} data-label={rec.Label} variant="brand-outline" label="Disconnect" data-id={rec.id}  icon-name="utility:remove_link" class="slds-button_outline-brand slds-m-left_x-small" onclick={handleQbDisconnect}></lightning-button>
+                                                </template> 
+                                               <template if:false={rec.isSfToQbConnected}>
+                                                    <img data-index={index}  data-id={rec.id} data-qbenvironment={rec.hic_qbmadeasy__Environment__c} data-label={rec.Label} onclick={redirectOnQb} src={qbConnectButtonImage} style="max-width: 10rem;cursor:pointer" onmouseover={handleConnectToQbButtonHover} onmouseout={handleConnectToQbButtonHoverOut}>
+                                                   <!-- <lightning-button  data-index={index} variant="brand-outline" label="Connect" data-id={rec.id} data-qbenvironment={rec.hic_qbmadeasy__Environment__c} data-label={rec.Label} onclick={redirectOnQb}  icon-name="utility:link" class="slds-button_outline-brand slds-m-left_x-small slds-p-right_small"></lightning-button> -->
+                                               </template>
+                                            </td>
+                                        </tr>    
+                                    </template>
+                                    <tbody >
+                                    </tbody>
+                                </table>
+                            </lightning-tab>
+
+                            <lightning-tab label="QuickBooks To Salesforce (Real-time Sync)" class="slds-align_absolute-center">
+                                <table  border="1" class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered">
+                                    <thead >
+                                        <tr>
+                                            <th class="centerHeading" >{ConfigureCompanyNameTxt}</th>
+                                            <th class="centerHeading" >{ConfigureCompanyStatusTxt}</th>
+                                            <th class="centerHeading" >{ConfigureActionTxt}</th>
+                                        </tr>
+                                    </thead>
+                                    <template for:each={qbToSfCompanySingleRec} for:item="rec" for:index="index" >
+                                        <tr key={rec.id} data-index={index}>
+                                            <td class ="centerName">{rec.Label}</td>
+                                            <td class="center" data-index={index}>
+                                            <!-- <td data-index={index}> -->
+                                                <template if:true={rec.isQbToSfConnected}>
+                                                    <lightning-badge class="slds-theme_success" label="Connected" ></lightning-badge> 
+                                                 </template>
+                                                 <template if:false={rec.isQbToSfConnected}>
+                                                  <lightning-badge class="slds-theme_error" label="Disconnected" data-index={index}></lightning-badge> 
+                                               </template>
+                                               <!-- <template if:true={rec.isConnected}>
+                                                    SF <img src={sfToQbConnectionLogo} alt="Connect Logo" style="width: 3rem;"> QB
+                                                </template>
+                                                <template if:false={rec.isConnected}>
+                                                    SF <img src={qbAndSfDisConnectedLogo} alt="Connect Logo" style="width: 3rem;"> QB
+                                                </template> -->
+                                                 
+                                            </td>
+                                            <td class="center" data-index={index}>
+                                                 <!--
+                                                <lightning-button variant="brand-outline" data-id={rec.id}  data-realmid1={rec.hic_qbmadeasy__RealmId__c} data-label={rec.Label} label="Setup" data-index={index} onclick={onEditCompany}  icon-name="utility:settings" class="slds-button_outline-brand slds-m-left_x-small" ></lightning-button>
+                                                <lightning-button  variant="brand-outline" label="Delete" onclick={handleAuthMetadataDelete}  icon-name="utility:delete" data-developername={rec.DeveloperName} data-index={index} class="slds-button_outline-brand slds-m-left_x-small"></lightning-button>
+                                                
+                                                <template if:true={rec.isConnected}>
+                                                    <lightning-button variant="brand-outline" label="Company Connection"  data-index={index} data-realmid1={rec.hic_qbmadeasy__RealmId__c} onclick={handleCompanyConnection}  icon-name="utility:remove_link" class="slds-button_outline-brand slds-m-left_x-small"></lightning-button>
+                                               </template>-->
+                                               <!-- <template if:false={rec.isConnected}> -->
+                                                   <!-- <lightning-button  data-index={index} variant="brand-outline" label="Connect" data-id={rec.id} data-qbenvironment={rec.hic_qbmadeasy__Environment__c} data-label={rec.Label} onclick={handleCompanyConnection}  icon-name="utility:link" class="slds-button_outline-brand slds-m-left_x-small slds-p-right_small"></lightning-button> -->
+                                               <!-- </template> -->
+                                               <template if:true={rec.isQbToSfConnected}>
+                                                <!-- <lightning-button variant="brand-outline" label="Company Connection"  data-index={index} data-realmid1={rec.hic_qbmadeasy__RealmId__c} onclick={handleCompanyConnection}  icon-name="utility:remove_link" class="slds-button_outline-brand slds-m-left_x-small"></lightning-button> -->
+                                                <lightning-button data-index={index} data-realmid1={rec.hic_qbmadeasy__RealmId__c}  data-qbenvironment={rec.hic_qbmadeasy__Environment__c} data-label={rec.Label} variant="brand-outline" label="Disconnect" data-id={rec.id}  icon-name="utility:remove_link" class="slds-button_outline-brand slds-m-left_x-small" onclick={handleQbDatabaseDelete}></lightning-button>
+                                                </template> 
+                                               <template if:false={rec.isQbToSfConnected}>
+                                                   <lightning-button  data-index={index}  data-realmid1={rec.hic_qbmadeasy__RealmId__c}  variant="brand-outline" label="Connect" data-id={rec.id} data-qbenvironment={rec.hic_qbmadeasy__Environment__c} data-label={rec.Label} onclick={redirectToSalesforce}  icon-name="utility:link" class="slds-button_outline-brand slds-m-left_x-small slds-p-right_small" ></lightning-button>
+                                               </template>
+                                            </td> 
+                                        </tr>    
+                                    </template>
+                                    <tbody >
+                                    </tbody>
+                                </table>
+                            </lightning-tab>
+                            
+                        </lightning-tabset>
+                    </div>
+   
+                </div>
+                </section>
+    
+                <div class="slds-backdrop slds-backdrop_open" role="presentation"></div>
+        </template>
+    
+      
+    </template>
+
+    <template if:true={yesWantToDelete}>
+        <section role="dialog" tabindex="-1" aria-modal="true" aria-labelledby="modal-heading-01" class="slds-modal slds-fade-in-open slds-modal_small">
+
+            <div class="slds-modal__container">
+
+                <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" onclick={closeContactSupport}>
+                    <lightning-icon icon-name="utility:close" variant="inverse" alternative-text="Close"
+                    size="medium">
+                    </lightning-icon>
+                    <span class="slds-assistive-text">{ConfigureCancelCloseTxt}</span>
+                </button>
+
+               
+                
+                <div class="slds-modal__content slds-p-around_medium "  style="padding-bottom: 10%; text-align:center; Font-size:medium;" >
+                   <b> Are you sure you want to delete</b>
+                   <div class="center" >
+                  
+                   <lightning-button variant="brand"  label="Yes"  onclick={yesDelete} ></lightning-button>
+                   <lightning-button  variant="brand" label="No" onclick={NoDelete}> </lightning-button>
+                
+                </div>
+                </div>
+                
+               
+
+            </div>
+            </section>
+
+            <div class="slds-backdrop slds-backdrop_open" role="presentation"></div>
+    </template>
+
+    <template if:true={isBidirectionalSetupSelected} >
+        <div if:true={isAlreadyAuthorised} style="margin-top: 3%;">
+            <div if:false={isLoaded} class="slds-align_absolute-center">
+                <lightning-spinner variant="brand" size="small" alternative-text="Loading"></lightning-spinner>
+            </div>
+            <div class="col-sm-10" id="tableclass3">
+                <table id="myTable3" border="1" class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered">
+                    <thead id="table_head3">
+                        <tr>
+                            <th class="centerHeading" >{ConfigureCompanyNameTxt}</th>
+                            <th class="centerHeading" >{ConfigureCompanyIdTxt}</th>
+                            <th class="centerHeading" >{ConfigureCompanyStatusTxt}</th>
+                            
+                        </tr>
+                    </thead>
+                    <template for:each={qbToSfCompanyrecords} for:item="rec" for:index="index" >
+                        <tr key={rec.id} data-index={index}>
+                            <td class ="centerName">{rec.Label}</td>
+                            <td class ="centerName">{rec.hic_qbmadeasy__RealmId__c}</td>
+                            <td class="center">
+                                <lightning-badge class="slds-theme_success" label="Connected"></lightning-badge> 
+                            </td>
+                        </tr>    
+                    </template>
+                    <tbody id = "table_body4">
+                    </tbody>
+                </table>
+            </div>
+            <div class="slds-align_absolute-center" style="margin-top:1% ;">
+                <lightning-button variant="brand" label="Allow for Quickbooks To Salesforce Connection"  onclick={redirectToSalesforce} class="slds-m-left_x-small"></lightning-button>
+                
+            </div>                
+        </div>
+    </template>
+
+    <template if:true={isCurrentCompanySelected}>
+        <c-qb_-qb-company-setup-comp company-id={realmId} companydata={qbToSfCompanyrecords} onsaveqbsetup={onOpenMappings} onclickpreviousbutton={onCompanySetup} onemailvaluechange={onEmailValueChange}> </c-qb_-qb-company-setup-comp>
+    </template>
+
+
+    <div class="slds-align_absolute-center slds-text-heading_medium" style="height:3rem">
+    <div if:true={onFieldMapping}>
+        <lightning-layout>
+            <lightning-layout-item >
+                <lightning-combobox
+                    label=""
+                    options={options}
+                    value={selectedOption}
+                    onchange={handleOptionChange}
+                ></lightning-combobox>
+            </lightning-layout-item>
+           
+        </lightning-layout>
+    </div>
+</div>
+        
+    
+    <c-historic-Data-Sync-Modal onfinishclick={handleFinishMethod} style="display: none;"> </c-historic-Data-Sync-Modal>
+    <c-qb_-sf-to-qb-mapping-data-comp is-pro-feature-enable={isProFeaturesEnabled}  style="display: none;" ></c-qb_-sf-to-qb-mapping-data-comp>
+
+
+
+    <template if:true={isContactSupport}>
+        <section role="dialog" tabindex="-1" aria-modal="true" aria-labelledby="modal-heading-01" class="slds-modal slds-fade-in-open slds-modal_small">
+
+            <div class="slds-modal__container">
+
+                <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" onclick={closeContactSupport}>
+                    <lightning-icon icon-name="utility:close" variant="inverse" alternative-text="Close"
+                    size="medium">
+                    </lightning-icon>
+                    <span class="slds-assistive-text">{ConfigureCancelCloseTxt}</span>
+                </button>
+
+                <div class="slds-modal__header">
+                    <h1 id="modal-heading-01" class="slds-modal__title slds-hyphenate">
+                        <b>{ContactSupportText}</b>
+                    </h1>
+                </div>
+                
+                <div class="slds-modal__content slds-p-around_medium"  style="padding-bottom: 10%;" >
+                    <lightning-textarea name="input6" required value="" label="Issue" maxlength="60" placeholder="Please write your issue here..">
+                    </lightning-textarea>
+                </div>
+
+                <div class="slds-modal__footer">
+                    <button class="slds-button slds-button_brand slds-align_absolute-center" onclick={onCustomerSupportSubmit}>{ConfigureSubmitBtnLbl}</button>
+                </div>
+
+            </div>
+            </section>
+
+            <div class="slds-backdrop slds-backdrop_open" role="presentation"></div>
+    </template>
+
+
+    <template if:true={isContactWarning}>
+        <section role="dialog" tabindex="-1" aria-modal="true" aria-labelledby="modal-heading-01" class="slds-modal slds-fade-in-open slds-modal_small">
+            <div class="slds-modal__container">
+                <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" onclick={closeContactWarningModal}>
+                    <lightning-icon icon-name="utility:close" variant="inverse" alternative-text="Close"
+                    size="medium">
+                    </lightning-icon>
+                    <span class="slds-assistive-text">{ConfigureCancelCloseTxt}</span>
+                </button>
+
+                <div class="slds-modal__header">
+                    <h1  class="slds-modal__title slds-hyphenate">
+                       {ConfigureWarningBtnLbl}
+                    </h1>
+                </div>
+                
+                <div class="slds-modal__content slds-p-around_medium" >
+                    <b class=" slds-align_absolute-center">{ChangesLostWarning}</b>
+                </div>
+
+                <div class="slds-modal__footer">
+                    <button class="slds-button " onclick={closeContactWarningModal} >{ConfigureCancelBtnLbl}</button>
+                    <button class="slds-button slds-button_brand" onclick={openMultiCompanyModal} >{ConfigureOkBtnLbl}</button>
+                </div>
+
+            </div>
+            </section>
+
+            <div class="slds-backdrop slds-backdrop_open" role="presentation"></div>
+            
+    </template>
+    
+
+    <template if:true={isDebugLog}>
+        <section role="dialog" tabindex="-1" aria-modal="true" aria-labelledby="modal-heading-01" class="slds-modal slds-fade-in-open slds-modal_small">
+            <div class="slds-modal__container">
+                <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" onclick={closeContactWarningModal}>
+                    <lightning-icon icon-name="utility:close" variant="inverse" alternative-text="Close"
+                    size="medium">
+                    </lightning-icon>
+                    <span class="slds-assistive-text">{ConfigureCancelCloseTxt}</span>
+                </button>
+
+                <div class="slds-modal__header">
+                    <h1  class="slds-modal__title slds-hyphenate">
+                       {ConfigureWarningBtnLbl}
+                    </h1>
+                </div>
+                
+                <div class="slds-modal__content slds-p-around_medium" >
+                    <b class=" slds-align_absolute-center">{ChangesLostWarning}</b>
+                </div>
+
+                <div class="slds-modal__footer">
+                    <button class="slds-button " onclick={closeContactWarningModal} >{ConfigureCancelBtnLbl}</button>
+                    <button class="slds-button slds-button_brand" onclick={openMultiCompanyModal} >{ConfigureOkBtnLbl}</button>
+                </div>
+
+            </div>
+            </section>
+
+            <div class="slds-backdrop slds-backdrop_open" role="presentation"></div>
+            
+    </template>
+
+    <template if:true={isMultiCompanyOpen}>
+        <section role="dialog" tabindex="-1" aria-modal="true" aria-labelledby="modal-heading-01" class="slds-modal slds-fade-in-open slds-modal_small">
+            <div class="slds-modal__container">
+            <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" onclick={closeMultiCompanyModal}>
+                <lightning-icon icon-name="utility:close" variant="inverse" alternative-text="Close"
+                size="medium">
+            </lightning-icon>
+            <span class="slds-assistive-text">{ConfigureCancelCloseTxt}</span>
+            </button>
+            <div class="slds-modal__header">
+            <h1  class="slds-modal__title slds-hyphenate">
+                {MultiCompanyTxt}
+            </h1>
+            </div>
+            
+            <div class="slds-modal__content slds-p-around_medium" >
+                <div class="col-sm-10" id="tableclass">
+                  <template if:true={isSpinnerLoaded}>
+                    <div class="slds-align_absolute-center">
+                      <img src={hicGIF} style="width: 26%;margin-top: 10%;" >
+                    </div>
+                  </template>
+                  <template if:false={isSpinnerLoaded}>
+                    <table id="myTable" border="1" class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered">
+                        <thead id="table_head">
+                            <tr>
+                                <th class="centerHeading">{ConfigureCompanyNameTxt}</th>
+                                <th class="centerHeading">{ConfigureCompanyIdTxt}</th>
+                                <th class="centerHeading">{ConfigureActionTxt}</th>
+                            </tr>
+                        </thead>
+                        <template for:each={records} for:item="rec" for:index="index" >
+                            <tr key={rec.id} data-index={index}>
+                                <td class ="centerName">{rec.Label}</td>
+                                <td class ="centerName">{rec.hic_qbmadeasy__RealmId__c}</td>
+                                <td class="center" data-index={index}>
+                                    <!-- <lightning-button variant="brand"  data-id={rec.id}  data-realmid1={rec.hic_qbmadeasy__RealmId__c} data-label={rec.Label} label="Edit" onclick={onEditCompany} class="slds-var-m-left_x-small" data-index={index}></lightning-button> -->
+                                    <lightning-button variant="brand-outline" data-id={rec.id}  data-realmid1={rec.hic_qbmadeasy__RealmId__c} data-label={rec.Label} label="Setup" data-index={index} onclick={onEditCompany}  icon-name="utility:settings" class="slds-button_outline-brand slds-m-left_x-small" ></lightning-button>
+                                    <!-- <lightning-button variant="brand"  data-id={rec.id} data-realmid1={rec.realmId} label="Delete" onclick={onDeleteCompany} style="margin-left: 10px"  class="disabledHistoricalButton"></lightning-button> -->
+                                </td>
+                            </tr>    
+                        </template>
+                        <tbody id = "table_body">
+                        </tbody>
+                    </table>
+                    <div class="slds-align_absolute-center" style="margin-top:20px ;">
+                       
+                    </div>    
+                  </template>
+
+                </div>
+
+            </div>
+            <div class="slds-modal__footer">
+                <button class="slds-button " onclick={closeMultiCompanyModal} >{ConfigureCloseBtnLbl}</button>
+                <button class="slds-button slds-button_brand" onclick={openMultiCompanyModal} >{ConfigureRefreshBtnLbl}</button>
+                
+            </div>
+            </div>
+        </section>
+            <div class="slds-backdrop slds-backdrop_open" role="presentation"></div>
+    </template>
+    <template if:true={isNewCompany}>
+        <section role="dialog" tabindex="-1" aria-modal="true" aria-labelledby="modal-heading-01" class="slds-modal slds-fade-in-open slds-modal_small">
+            <div class="slds-modal__container">
+            <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" onclick={closeNewCompanyModal}>
+                <lightning-icon icon-name="utility:close" variant="inverse" alternative-text="Close"
+                size="medium">
+            </lightning-icon>
+            <span class="slds-assistive-text">{ConfigureCancelCloseTxt}</span>
+            </button>
+            <div class="slds-modal__header">
+            <h1  class="slds-modal__title slds-hyphenate">
+                {CompanyConfigHeader}
+            </h1>
+            </div>
+            
+            <div class="slds-modal__content slds-p-around_medium" >
+                <div class="col-sm-10" id="tableclassNew">
+                  <template if:true={isSpinnerLoaded}>
+                    <div class="slds-align_absolute-center">
+                      <img src={hicGIF} style="width: 26%;margin-top: 10%;" >
+                    </div>
+                  </template>
+                  <template if:false={isSpinnerLoaded}>
+                    <table id="myTableNew" border="1" class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered">
+                        <thead id="table_headNew">
+                            <tr>
+                                <th class="centerHeading">{ConfigureCompanyNameTxt}</th>
+                                <th class="centerHeading">{ConfigureCompanyIdTxt}</th>
+                                <th class="centerHeading">{ConfigureActionTxt}</th>
+                            </tr>
+                        </thead>
+                        <template for:each={newrecords} for:item="rec" for:index="index" >
+                            <tr key={rec.realmId}>
+                                <td class ="centerName">{rec.Label}</td>
+                                <td class ="centerName">{rec.realmId}</td>
+                                <td class="center">
+                                    <lightning-button variant="brand"  data-realmid1={rec.realmId} data-label={rec.Label} label="Continue" onclick={onEditCompany} class="slds-m-left_x-small"></lightning-button>
+                                </td>
+                            </tr>    
+                        </template>
+                        <tbody id = "table_bodyNew">
+                        </tbody>
+                    </table>
+                    <div class="slds-align_absolute-center" style="margin-top:20px ;">
+                        
+                        
+                    </div>    
+                  </template>
+
+                </div>
+
+            </div>
+            <div class="slds-modal__footer">
+                <button class="slds-button " onclick={closeNewCompanyModal} >{ConfigureCloseBtnLbl}</button>
+                
+                
+            </div>
+            </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open" role="presentation"></div>
+    </template>
+
+
+    <template if:true={isAddQuickbooksChecked}>
+      <section role="dialog" tabindex="-1" aria-modal="true" aria-labelledby="modal-heading-01" class="slds-modal slds-fade-in-open slds-modal_small">
+          <div class="slds-modal__container">
+          <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" onclick={handleDialogClose}>
+              <lightning-icon icon-name="utility:close" variant="inverse" alternative-text="Close"
+              size="medium">
+          </lightning-icon>
+          <span class="slds-assistive-text">{ConfigureCancelCloseTxt}</span>
+          </button>
+          <div class="slds-modal__header">
+          <h1 class="slds-modal__title slds-hyphenate">{SelectQuickbookHeader}</h1>
+          </div>
+          
+          <div class="slds-modal__content slds-p-around_medium" style="padding-bottom: 10%;" >
+            
+                <lightning-combobox
+                  name="Environment"
+                  label="Select One:"
+                  value={environmentChoosen}
+                  placeholder="Select QB Environment"
+                  options={environmentOptions}
+                  onchange={getChoosenValue}
+                  required
+          ></lightning-combobox>
+          </div>
+          <div class="slds-modal__footer" style="display: flex; justify-content:flex-end">
+          <button class="slds-button slds-button_neutral" style = "margin-right: .5rem;"   aria-label="Cancel and close" onclick={handleDialogClose}>{ConfigureCancelBtnLbl}</button>
+          <!-- <button class="slds-button slds-button_brand" onclick={redirectToQuickbookOnline} disabled={isenvironmentChoosen}>{ConfigureConnectBtnLabel}</button> -->
+          <img onclick={redirectToQuickbookOnline} src={qbConnectButtonImage} onmouseover={handleConnectToQbButtonHover} onmouseout={handleConnectToQbButtonHoverOut} style="max-width: 10rem; cursor:pointer">
+          </div>
+          </div>
+          </section>
+          <div class="slds-backdrop slds-backdrop_open" role="presentation"></div>
+  </template>
+
+
+    <template if:true={isFinishOpen}>
+        <div style="margin: 0 3rem; font-size: x-large;">
+            <span style="font-size:larger;color:green">
+                {BackgroundSetupMessage}
+            </span>
+            <Strong class="slds-float_right" style="font-size:larger;color:#032D60 ">
+                {progressValue}% Complete
+            </Strong>
+            
+            <lightning-progress-bar  variant ="success" value={progressValue} size="large"></lightning-progress-bar>
+            <br>
+            <p>
+                Great going ! The app is now configured and connected !
+            </p>
+            <br>
+            <p>
+                {ProcessMessageHeader}
+                <br>
+            </p>
+            <ol type="1">
+                <li>
+                    1.<a target="_blank" href="https://appexchange.salesforce.com/appxListingDetail?listingId=a0N4V00000JGVA5UAP&preview=%222%5B%E2%80%A6%5D70823.1672789443.1678697596-1148649348.1655322092&tab=r" >{ProcessMessageOp1}</a>
+                </li>
+                <li>
+                    2.<a target="_blank" href="https://tinyurl.com/l6fot6q" >{ProcessMessageOp2}</a>
+                </li>
+            </ol>
+        </div>
+        <lightning-layout multiple-rows style="margin:0 5rem;">
+            <template for:each={items} for:item="item">
+                <lightning-layout-item class="slds-text-align_center" key={item.key} size="12" small-device-size="12" medium-device-size="12" large-device-size="6" padding="around-small">
+                   
+                    
+                    <div class="custom-box slds-box slds-p-around_medium box  " style="height:10rem; width:25rem;">
+                        <lightning-icon icon-name={item.iconName} alternative-text="Icon Not Available"
+                        size="medium" class="slds-float_left">
+                        </lightning-icon>
+                        <span class="slds-text-align_center slds-text-heading_small" style="word-wrap:break-word;height:auto;">
+                            FOR {item.hic_qbmadeasy__SF_Label} - {item.hic_qbmadeasy__QB_Label}
+
+                            
+                                
+
+                            
+                            
+
+                        </span>
+                        
+                        <span>
+                                <span >
+                                    
+                                    <div class="slds-card__body slds-align_absolute-center slds-text-heading_large slds-var-m-top_medium" style="font-size: 250%; color:green;"  >
+                                        {item.totalNumOfQbRecInserted}/{item.totalNoOfJob}
+                                    </div>
+                                
+                                </span>
+                            <div>
+                            </div>
+                        </span>
+                        
+
+                        <div class="bottomright">{item.jobStatus}
+                            
+                            
+                        </div>
+                    
+                    </div>
+                </lightning-layout-item>
+            </template>
+        </lightning-layout>
+        <!-- <div>
+            <div class="slds-align_absolute-center">
+                <a  target="_blank"  href="https://www.facebook.com/quickbooksmadeasy">
+                    <img style="background: #10e1b1; border-radius: 50%; margin-right: 10px;" alt="Facebook" src={facebookLogo}/>
+                </a>
+                <a  target="_blank"  href="https://www.instagram.com/quickbooksmadeeasy">
+                    <img style="background: #10e1b1; border-radius: 50%; margin-right: 10px;"  alt="Insta" src={instagramLogo}/>
+                </a>
+                <a  target="_blank"  href="https://twitter.com/QBmadeasy">
+                    <img style="background: #10e1b1; border-radius: 50%; margin-right: 10px;" alt="Twitter" src={twitterLogo}/>
+                </a>
+                <a target="_blank"  href="https://www.linkedin.com/company/quick-books-made-easy/about">
+                    <img style="background: #10e1b1; border-radius: 50%; margin-right: 10px;"  alt="LinkedIn" src={linkedInLogo}/>
+                </a>
+                    <br>
+            </div>
+        </div>
+        <div class="slds-align_absolute-center" >
+            
+                {BuiltMssgPt1}
+                <img src={heartLogo} alt="❤" style="max-width: 10px;margin-left: 3px;" >
+                <a style="vertical-align: top; " href="https://hicglobalsolutions.com" target="_blank"> &nbsp; {BuiltMssgPt2} </a>
+            
+        </div> -->
+        <div style="margin-top: 1rem;">
+            <div class="social-media-footer" style="margin-bottom: .5rem;">
+                <a  target="_blank"  href="https://www.facebook.com/quickbooksmadeasy">
+                    <img alt="Facebook" src={facebookLogo}/>
+                </a>
+                <a  target="_blank"  href="https://www.instagram.com/quickbooksmadeeasy">
+                    <img alt="Insta" src={instagramLogo}/>
+                </a>
+                <a  target="_blank"  href="https://twitter.com/QBmadeasy">
+                    <img alt="Twitter" src={twitterLogo}/>
+                </a>
+                <a target="_blank"  href="https://www.linkedin.com/company/quick-books-made-easy/about">
+                    <img alt="LinkedIn" src={linkedInLogo}/>
+                </a>
+                
+            </div>
+        </div>
+        <div class="slds-align_absolute-center" >  
+            {BuiltMssgPt1}
+            <img src={heartLogo} alt="❤" style="max-width: 10px;margin-left: 3px;" >
+            <a style="vertical-align: top; " href="https://hicglobalsolutions.com" target="_blank"> &nbsp; {BuiltMssgPt2} </a>
+        </div> 
+                
+    </template>
+
+    <template if:true={isSyncOpen}>
+        <section role="dialog" tabindex="-1" aria-modal="true" aria-labelledby="modal-heading-01" class="slds-modal slds-fade-in-open slds-modal_small">
+            <div class="slds-modal__container">
+                <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" onclick={closeSyncWarningModal}>
+                    <lightning-icon icon-name="utility:close" variant="inverse" alternative-text="Close"
+                    size="medium">
+                    </lightning-icon>
+                    <span class="slds-assistive-text">{ConfigureCancelCloseTxt}</span>
+                </button>
+
+                <div class="slds-modal__header">
+                    <h1  class="slds-modal__title slds-hyphenate">
+                        {TersmConditionTxt}
+                    </h1>
+                </div>
+                
+                <div class="slds-modal__content slds-var-p-around_medium" >
+                    <b style="font-size:larger">{AttentionTxt}</b>
+                    <ul class="slds-list_dotted slds-m-top_large">
+                        <li>{FetchingRecordsTxt}</li>
+                        <li>{UpdateQbMessage}</li>
+                    </ul>
+                    <br>
+                    <br>
+                    <br>
+                    <lightning-input type="checkbox" label="Please indicate that you have read the above points." onchange={handlePrivacyCheck}></lightning-input>
+
+                </div>
+
+                <div class="slds-modal__footer">
+                    <lightning-button label="Start Sync"  class="slds-align_absolute-center"  icon-name="utility:change_record_type" onclick={startSyncToSF} variant="success" disabled={isPrivacyNotChecked}></lightning-button >
+                </div>
+
+            </div>
+            </section>
+
+            <div class="slds-backdrop slds-backdrop_open" role="presentation"></div>
+            
+    </template>
+    
+    </div>
+
+</template>

@@ -1,0 +1,35 @@
+<template>
+    <div class="weather-main-div">
+        <div class="weather-header-div">
+            <lightning-icon style="--slds-c-icon-color-foreground-default:white" icon-name="utility:world" size="large"></lightning-icon>
+            <lightning-combobox
+            name="location"
+            label="Select Location"
+            options={options}
+            onchange={handleLocationChange} ></lightning-combobox>
+        </div>
+        <template if:true={showResponse}>
+            <div class="response-main">
+                <template lwc:if={isLoading}>
+                    <span class="loader slds-align_absolute-center"></span>
+                </template>
+                <template lwc:else>
+                    <div class="response-showing-div">
+                        <img src={weatherPngUrl} class="condition-image">
+                        <div class="temperature-time-div">
+                            <p>{temperature}&deg;C</p>
+                            <p>{time}</p>
+                        </div>
+                    </div>
+                    <div class="map-container">
+                        <lightning-map
+                                map-markers={mapMarkers}
+                                zoom-level="12"
+                                markers-title="Location">
+                        </lightning-map>
+                    </div>
+                </template>
+            </div>
+        </template>
+    </div>
+</template>

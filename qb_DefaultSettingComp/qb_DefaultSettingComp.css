@@ -1,0 +1,40 @@
+*{
+    color: black;
+}
+.item-type-table td{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding:.5rem;
+}
+.inputs{
+    font-size: small;
+    font-family: Montserrat, sans-serif;
+}
+
+.input-with-icon {
+    display: flex;
+    align-items: center;
+}
+
+.info-icon{
+    --sds-c-icon-color-foreground-default: #014486;
+  }
+  .info-icon:hover{
+    --sds-c-icon-color-foreground-default:#032d60;
+  }
+.myModal{
+    padding: 0.5rem;
+    color: white;
+    position: absolute;
+    width: 17rem;
+    display: block;
+    z-index: 5;
+    border-radius: 0.5rem 0.5rem 0.5rem 0;
+    top: -4.6rem;
+    font-weight: 600;
+    text-wrap: wrap;
+    background: #014486;
+    left: 1rem;
+    display: none;
+}

@@ -1,0 +1,19 @@
+*{
+    color:black;
+}
+.debug-class{
+    display: flex;
+    flex-direction: column;
+    /* justify-content: space-between; */
+    padding: 2rem 1rem;
+    gap: 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid #D6D6D6;
+}
+.main-class{
+    margin-top:1rem;
+    margin-left: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap:1rem;
+}
